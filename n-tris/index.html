@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>N-tris</title>
+		<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" />
+		<script src="main.js" charset="utf-8"></script>
+		<style>
+			body {
+				font-family: "Lato", sans-serif;
+				background-color: #eff;
+				color: black;
+			}
+
+			.pieces-table td {
+				height: 16px;
+				width: 16px;
+				border-radius: 4px;
+			}
+
+			button {
+				cursor: pointer;
+				background-color: #fd0;
+				border-radius: 6px;
+				width: 100px;
+				margin-left: 6px;
+				margin-right: 6px;
+			}
+
+			button:hover {
+				font-weight: bold;
+			}
+
+			#n-field {
+				width: 40px;
+			}
+
+		</style>
+	</head>
+
+	<body onLoad="load();">
+		Enter n: <input id="n-field" type="text" value="4" />
+		<button onClick="generatePiecesTable();">Go</button>
+		<hr />
+		<div id="pieces-table-container"> </div>
+	</body>
+
+</html>
