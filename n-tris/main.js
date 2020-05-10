@@ -1,9 +1,9 @@
-const testPiece = [
-	[false, true, true, false],
-	[true, true, false, false],
-	[false, false, false, false],
-	[false, false, false, false],
-];
+// const testPiece = [
+// 	[false, true, true, false],
+// 	[true, true, false, false],
+// 	[false, false, false, false],
+// 	[false, false, false, false],
+// ];
 
 function load() {
 	// renderPiece(testPiece);
@@ -98,24 +98,7 @@ function generatePieces(n) {
 			}
 		}
 		pieces[i] = uniquePieces;
-
 	}
-
-	// for (var i = 1; i < n; i++) {
-	// 	const dupIndexes = [];
-	// 	for (var pieceNum = 0; pieceNum < pieces[i].length; pieceNum++) {
-	// 		for (var k = pieceNum + 1; k < pieces[i].length; k++) {
-	// 			const testingPiece = copyGrid(pieces[i][k]);
-	// 			for (var r = 0; r < 4; r++) {
-	// 				if (equalPieces(testingPiece, pieces[i][pieceNum])) {
-	// 					dupIndexes.push(k);
-	// 					break;
-	// 				}
-	// 				rotatePiece(testingPiece);
-	// 			}
-	// 		}
-	// 	}
-	// }
 	return pieces;
 }
 
