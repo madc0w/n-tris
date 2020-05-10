@@ -1,5 +1,23 @@
+const testPiece = [
+	[false, true, true, false],
+	[true, true, false, false],
+	[false, false, false, false],
+	[false, false, false, false],
+];
+
 function load() {
+	// renderPiece(testPiece);
+	// const copy = copyGrid(testPiece);
+	// rotatePiece(copy);
+	// console.log(equalPieces(copy, testPiece));
 	generatePiecesTable();
+}
+
+function renderPiece(piece) {
+	var table = '<table class="pieces-table">';
+	table += generatePieceHtml(piece, 0);
+	table += '</table>';
+	document.getElementById('pieces-table-container').innerHTML = table;
 }
 
 function generatePiecesTable() {
@@ -7,37 +25,45 @@ function generatePiecesTable() {
 	const pieces = generatePieces(maxN);
 	var table = '<table class="pieces-table">';
 	for (var n in pieces) {
+		console.log(`=== ${n} ===`);
+
 		n = parseInt(n);
 		table += `<tr><td colspan="100">${n + 1}-tris pieces:</td></tr>`;
 		var pieceNum = 0;
 		for (const piece of pieces[n]) {
-			table += `<tr><td></td></tr>`;
-			const rgb = hsvToRgb(pieceNum / pieces[n].length, 1, 0.6);
-			var r = rgb.r.toString(16);
-			if (r.length < 2) {
-				r = '0' + r;
-			}
-			var g = rgb.g.toString(16);
-			if (g.length < 2) {
-				g = '0' + g;
-			}
-			var b = rgb.b.toString(16);
-			if (b.length < 2) {
-				b = '0' + b;
-			}
-			var color = `#${r}${g}${b}`;
-			for (const col of piece) {
-				table += '<tr>';
-				for (const square of col) {
-					table += '<td' + (square ? ` style="background-color: ${color};"` : '') + '/>';
-				}
-				table += '</tr>';
-			}
-			pieceNum++;
+			console.log(`=== pieceNum ${pieceNum} ===`);
+			displayPiece(piece);
+			table += generatePieceHtml(piece, pieceNum++);
 		}
 	}
 	table += '</table>';
 	document.getElementById('pieces-table-container').innerHTML = table;
+}
+
+function generatePieceHtml(piece, num) {
+	var tableRow = `<tr><td></td></tr>`;
+	const rgb = hsvToRgb(num / piece.length, 1, 0.6);
+	var r = rgb.r.toString(16);
+	if (r.length < 2) {
+		r = '0' + r;
+	}
+	var g = rgb.g.toString(16);
+	if (g.length < 2) {
+		g = '0' + g;
+	}
+	var b = rgb.b.toString(16);
+	if (b.length < 2) {
+		b = '0' + b;
+	}
+	var color = `#${r}${g}${b}`;
+	for (const col of piece) {
+		tableRow += '<tr>';
+		for (const square of col) {
+			tableRow += '<td' + (square ? ` style="background-color: ${color};"` : '') + '/>';
+		}
+		tableRow += '</tr>';
+	}
+	return tableRow;
 }
 
 
@@ -47,11 +73,49 @@ function generatePieces(n) {
 	pieces.push([grid]);
 	grid[0][0] = true;
 
-	for (i = 1; i < n; i++) {
+	for (var i = 1; i < n; i++) {
 		for (const piece of pieces[i - 1]) {
 			pieces[i] = (pieces[i] || []).concat(addOneSquare(piece));
 		}
 	}
+
+	for (var i = 1; i < n; i++) {
+		const dupIndexes = [];
+		for (var pieceNum = 0; pieceNum < pieces[i].length; pieceNum++) {
+			const piece = pieces[i][pieceNum];
+			for (var k = pieceNum + 1; k < pieces[i].length; k++) {
+				const testingPiece = copyGrid(pieces[i][k]);
+				if (equalPieces(testingPiece, piece)) {
+					dupIndexes.push(k);
+				}
+			}
+		}
+
+		const uniquePieces = [];
+		for (var pieceNum = 0; pieceNum < pieces[i].length; pieceNum++) {
+			if (!dupIndexes.includes(pieceNum)) {
+				uniquePieces.push(pieces[i][pieceNum]);
+			}
+		}
+		pieces[i] = uniquePieces;
+
+	}
+
+	// for (var i = 1; i < n; i++) {
+	// 	const dupIndexes = [];
+	// 	for (var pieceNum = 0; pieceNum < pieces[i].length; pieceNum++) {
+	// 		for (var k = pieceNum + 1; k < pieces[i].length; k++) {
+	// 			const testingPiece = copyGrid(pieces[i][k]);
+	// 			for (var r = 0; r < 4; r++) {
+	// 				if (equalPieces(testingPiece, pieces[i][pieceNum])) {
+	// 					dupIndexes.push(k);
+	// 					break;
+	// 				}
+	// 				rotatePiece(testingPiece);
+	// 			}
+	// 		}
+	// 	}
+	// }
 	return pieces;
 }
 
@@ -63,21 +127,25 @@ function addOneSquare(grid) {
 				if (x > 0 && !grid[x - 1][y]) {
 					const piece = copyGrid(grid);
 					piece[x - 1][y] = true;
+					normalizePiece(piece);
 					pieces.push(piece);
 				}
 				if (x < grid.length - 1 && !grid[x + 1][y]) {
 					const piece = copyGrid(grid);
 					piece[x + 1][y] = true;
+					normalizePiece(piece);
 					pieces.push(piece);
 				}
 				if (y > 0 && !grid[x][y - 1]) {
 					const piece = copyGrid(grid);
 					piece[x][y - 1] = true;
+					normalizePiece(piece);
 					pieces.push(piece);
 				}
 				if (y < grid.length - 1 && !grid[x][y + 1]) {
 					const piece = copyGrid(grid);
 					piece[x][y + 1] = true;
+					normalizePiece(piece);
 					pieces.push(piece);
 				}
 			}
@@ -149,4 +217,87 @@ function hsvToRgb(h, s, v) {
 		g: Math.round(g * 255),
 		b: Math.round(b * 255)
 	};
+}
+
+function rotatePiece(piece, direction) {
+	normalizePiece(piece);
+	var maxX = 0;
+	var maxY = 0;
+	for (var x = 0; x < piece.length; x++) {
+		for (var y = 0; y < piece[x].length; y++) {
+			if (piece[x][y]) {
+				maxX = Math.max(maxX, x);
+				maxY = Math.max(maxY, y);
+			}
+		}
+	}
+	const rPoint = {
+		x: Math.floor(maxX / 2),
+		y: Math.floor(maxY / 2)
+	};
+
+	const newPiece = makeGrid(piece.length);
+	for (var x = 0; x < piece.length; x++) {
+		for (var y = 0; y < piece[x].length; y++) {
+			const px = rPoint.y - y + piece.length;
+			const py = x - rPoint.x + piece.length;
+			// console.log(px, py);
+			if (!newPiece[px]) {
+				newPiece[px] = [];
+				// console.log(px);
+			}
+			newPiece[px][py] = piece[x][y];
+		}
+	}
+	normalizePiece(newPiece);
+	for (var x = 0; x < piece.length; x++) {
+		for (var y = 0; y < piece[x].length; y++) {
+			piece[x][y] = newPiece[x][y];
+		}
+	}
+}
+
+function normalizePiece(piece) {
+	var minX = piece.length;
+	var minY = piece[0].length;
+	for (var x = 0; x < piece.length; x++) {
+		for (var y = 0; y < piece[x].length; y++) {
+			if (piece[x][y]) {
+				minX = Math.min(minX, x);
+				minY = Math.min(minY, y);
+			}
+		}
+	}
+
+	for (var x = 0; x < piece.length; x++) {
+		for (var y = 0; y < piece[x].length; y++) {
+			piece[x][y] = (piece[x + minX] || [false])[y + minY] || false;
+		}
+	}
+}
+
+function equalPieces(p1, p2) {
+	if (p1.length != p2.length) {
+		return false;
+	}
+
+	function equal(_p1, _p2) {
+		for (var x = 0; x < _p1.length; x++) {
+			for (var y = 0; y < _p1[x].length; y++) {
+				if (_p2[x][y] != _p1[x][y]) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	p1 = copyGrid(p1);
+	for (var r = 0; r < 4; r++) {
+		if (equal(p1, p2)) {
+			return true;
+		}
+		rotatePiece(p1);
+	}
+
+	return false;
 }
