@@ -23,21 +23,23 @@ function renderPiece(piece) {
 function generatePiecesTable() {
 	const maxN = parseInt(document.getElementById('n-field').value);
 	const pieces = generatePieces(maxN);
-	var table = '<table class="pieces-table">';
+	var html = '';
 	for (var n in pieces) {
-		console.log(`=== ${n} ===`);
-
+		// console.log(`=== ${n} ===`);
 		n = parseInt(n);
-		table += `<tr><td colspan="100">${n + 1}-tris pieces:</td></tr>`;
+		html += `<div class="pieces-header">${pieces[n].length} &nbsp;&nbsp;${n + 1}-tris pieces :</div>`;
+		html += '<div class="pieces-table-wrapper">';
+		html += '<table class="pieces-table">';
 		var pieceNum = 0;
 		for (const piece of pieces[n]) {
 			console.log(`=== pieceNum ${pieceNum} ===`);
 			displayPiece(piece);
-			table += generatePieceHtml(piece, pieceNum++);
+			html += generatePieceHtml(piece, pieceNum++);
 		}
+		html += '</table>';
+		html += '</div>';
 	}
-	table += '</table>';
-	document.getElementById('pieces-table-container').innerHTML = table;
+	document.getElementById('pieces-table-container').innerHTML = html;
 }
 
 function generatePieceHtml(piece, num) {
