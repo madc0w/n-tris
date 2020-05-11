@@ -71,9 +71,10 @@ function generatePieceHtml(piece, num) {
 
 function generatePieces(n) {
 	const pieces = [];
-	const grid = makeGrid(n);
+	const grid = makeGrid(n + 2);
 	pieces.push([grid]);
-	grid[0][0] = true;
+	const initSquarePos = Math.floor(n / 2);
+	grid[initSquarePos][initSquarePos] = true;
 
 	for (var i = 1; i < n; i++) {
 		for (const piece of pieces[i - 1]) {
@@ -112,25 +113,25 @@ function addOneSquare(grid) {
 				if (x > 0 && !grid[x - 1][y]) {
 					const piece = copyGrid(grid);
 					piece[x - 1][y] = true;
-					normalizePiece(piece);
+					// normalizePiece(piece);
 					pieces.push(piece);
 				}
 				if (x < grid.length - 1 && !grid[x + 1][y]) {
 					const piece = copyGrid(grid);
 					piece[x + 1][y] = true;
-					normalizePiece(piece);
+					// normalizePiece(piece);
 					pieces.push(piece);
 				}
 				if (y > 0 && !grid[x][y - 1]) {
 					const piece = copyGrid(grid);
 					piece[x][y - 1] = true;
-					normalizePiece(piece);
+					// normalizePiece(piece);
 					pieces.push(piece);
 				}
 				if (y < grid.length - 1 && !grid[x][y + 1]) {
 					const piece = copyGrid(grid);
 					piece[x][y + 1] = true;
-					normalizePiece(piece);
+					// normalizePiece(piece);
 					pieces.push(piece);
 				}
 			}
@@ -259,6 +260,10 @@ function normalizePiece(piece) {
 			piece[x][y] = (piece[x + minX] || [false])[y + minY] || false;
 		}
 	}
+	return {
+		minX,
+		minY
+	};
 }
 
 function equalPieces(p1, p2) {
@@ -277,6 +282,10 @@ function equalPieces(p1, p2) {
 		return true;
 	}
 	p1 = copyGrid(p1);
+	normalizePiece(p1);
+	p2 = copyGrid(p2);
+	normalizePiece(p2);
+
 	for (var r = 0; r < 4; r++) {
 		if (equal(p1, p2)) {
 			return true;
