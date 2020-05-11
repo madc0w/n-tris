@@ -32,8 +32,8 @@ function generatePiecesTable() {
 		html += '<table class="pieces-table">';
 		var pieceNum = 0;
 		for (const piece of pieces[n]) {
-			console.log(`=== pieceNum ${pieceNum} ===`);
-			displayPiece(piece);
+			// console.log(`=== pieceNum ${pieceNum} ===`);
+			// displayPiece(piece);
 			html += generatePieceHtml(piece, pieceNum++);
 		}
 		html += '</table>';
@@ -77,12 +77,14 @@ function generatePieces(n) {
 	grid[initSquarePos][initSquarePos] = true;
 
 	for (var i = 1; i < n; i++) {
+		console.log(`${new Date()} : generating ${i + 1}-tris pieces`);
 		for (const piece of pieces[i - 1]) {
 			pieces[i] = (pieces[i] || []).concat(addOneSquare(piece));
 		}
 	}
 
 	for (var i = 1; i < n; i++) {
+		console.log(`${new Date()} : filtering ${i + 1}-tris pieces`);
 		const dupIndexes = [];
 		for (var pieceNum = 0; pieceNum < pieces[i].length; pieceNum++) {
 			const piece = pieces[i][pieceNum];
@@ -91,6 +93,11 @@ function generatePieces(n) {
 				if (equalPieces(testingPiece, piece)) {
 					dupIndexes.push(k);
 				}
+			}
+
+			if (pieceNum > 0 && pieceNum % 100 == 0) {
+				const percentDone = (100 * pieceNum / pieces[i].length).toFixed(1);
+				console.log(`${new Date()} : ${percentDone}%`);
 			}
 		}
 
@@ -102,6 +109,7 @@ function generatePieces(n) {
 		}
 		pieces[i] = uniquePieces;
 	}
+	console.log(`${new Date()} : DONE`);
 	return pieces;
 }
 
