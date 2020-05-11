@@ -89,9 +89,11 @@ function generatePieces(n) {
 		for (var pieceNum = 0; pieceNum < pieces[i].length; pieceNum++) {
 			const piece = pieces[i][pieceNum];
 			for (var k = pieceNum + 1; k < pieces[i].length; k++) {
-				const testingPiece = copyGrid(pieces[i][k]);
-				if (equalPieces(testingPiece, piece)) {
-					dupIndexes.push(k);
+				if (!dupIndexes.includes(pieceNum)) {
+					const testingPiece = copyGrid(pieces[i][k]);
+					if (equalPieces(testingPiece, piece)) {
+						dupIndexes.push(k);
+					}
 				}
 			}
 
