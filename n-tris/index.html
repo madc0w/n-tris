@@ -49,13 +49,22 @@
 				font-weight: bold;
 			}
 
+			#spinner {
+				height: 36px;
+			}
+
+			.hidden {
+				display: none;
+			}
+
 		</style>
 	</head>
 
 	<body onLoad="load();">
 		Enter n: <input id="n-field" type="text" value="4" />
 
-		<button onClick="generatePiecesTable()">Go</button>
+		<button id="go-button" onClick="generatePiecesTable()">Go</button>
+		<span id="spinner" class="hidden">WORKING...</span>
 		<!-- <button onClick="rotatePiece(testPiece); renderPiece(testPiece);">Go</button> -->
 		<hr />
 		<div id="pieces-table-container"> </div>

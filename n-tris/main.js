@@ -21,25 +21,31 @@ function renderPiece(piece) {
 }
 
 function generatePiecesTable() {
+	document.getElementById('spinner').className = '';
+	document.getElementById('go-button').className = 'hidden';
 	const maxN = parseInt(document.getElementById('n-field').value);
-	const pieces = generatePieces(maxN);
-	var html = '';
-	for (var n in pieces) {
-		// console.log(`=== ${n} ===`);
-		n = parseInt(n);
-		html += `<div class="pieces-header">${pieces[n].length} &nbsp;&nbsp;${n + 1}-tris pieces :</div>`;
-		html += '<div class="pieces-table-wrapper">';
-		html += '<table class="pieces-table">';
-		var pieceNum = 0;
-		for (const piece of pieces[n]) {
-			// console.log(`=== pieceNum ${pieceNum} ===`);
-			// displayPiece(piece);
-			html += generatePieceHtml(piece, pieceNum++);
+	setTimeout(() => {
+		const pieces = generatePieces(maxN);
+		document.getElementById('spinner').className = 'hidden';
+		document.getElementById('go-button').className = '';
+		var html = '';
+		for (var n in pieces) {
+			// console.log(`=== ${n} ===`);
+			n = parseInt(n);
+			html += `<div class="pieces-header">${pieces[n].length} &nbsp;&nbsp;${n + 1}-tris pieces :</div>`;
+			html += '<div class="pieces-table-wrapper">';
+			html += '<table class="pieces-table">';
+			var pieceNum = 0;
+			for (const piece of pieces[n]) {
+				// console.log(`=== pieceNum ${pieceNum} ===`);
+				// displayPiece(piece);
+				html += generatePieceHtml(piece, pieceNum++);
+			}
+			html += '</table>';
+			html += '</div>';
 		}
-		html += '</table>';
-		html += '</div>';
-	}
-	document.getElementById('pieces-table-container').innerHTML = html;
+		document.getElementById('pieces-table-container').innerHTML = html;
+	}, 0);
 }
 
 function generatePieceHtml(piece, num) {
@@ -88,11 +94,13 @@ function generatePieces(n) {
 		const dupIndexes = [];
 		for (var pieceNum = 0; pieceNum < pieces[i].length; pieceNum++) {
 			const piece = pieces[i][pieceNum];
-			for (var k = pieceNum + 1; k < pieces[i].length; k++) {
-				if (!dupIndexes.includes(pieceNum)) {
-					const testingPiece = copyGrid(pieces[i][k]);
-					if (equalPieces(testingPiece, piece)) {
-						dupIndexes.push(k);
+			if (!dupIndexes.includes(pieceNum)) {
+				for (var k = pieceNum + 1; k < pieces[i].length; k++) {
+					if (!dupIndexes.includes(k)) {
+						const testingPiece = copyGrid(pieces[i][k]);
+						if (equalPieces(testingPiece, piece)) {
+							dupIndexes.push(k);
+						}
 					}
 				}
 			}
