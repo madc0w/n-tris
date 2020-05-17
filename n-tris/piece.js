@@ -72,6 +72,7 @@ function Piece(n) {
 	};
 
 	this.rotate = direction => {
+		// console.log('direction ', direction);
 		this.normalize();
 		var maxX = 0;
 		var maxY = 0;
@@ -91,8 +92,16 @@ function Piece(n) {
 		const newPiece = new Piece(this.grid.length);
 		for (var x = 0; x < this.grid.length; x++) {
 			for (var y = 0; y < this.grid[x].length; y++) {
-				const px = rPoint.y - y + this.grid.length;
-				const py = x - rPoint.x + this.grid.length;
+				var px, py;
+				if (!direction || direction == 'left') {
+					px = rPoint.y - y;
+					py = x - rPoint.x;
+				} else {
+					px = y - rPoint.y;
+					py = rPoint.x - x;
+				}
+				px += this.grid.length;
+				py += this.grid.length;
 				// console.log(px, py);
 				if (!newPiece.grid[px]) {
 					newPiece.grid[px] = [];
