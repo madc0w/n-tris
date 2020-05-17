@@ -5,12 +5,65 @@
 // 	[false, false, false, false],
 // ];
 
-function load() {
-	// renderPiece(testPiece);
-	// const copy = copyGrid(testPiece);
-	// rotatePiece(copy);
-	// console.log(equalPieces(copy, testPiece));
-	generatePiecesTable();
+const gameEndDelay = 2000;
+const squareSize = 20;
+
+var canvas, ctx;
+const keysDown = {};
+var gameEndTime;
+var piece;
+
+function onLoad() {
+	canvas = document.getElementById('game-canvas');
+	ctx = canvas.getContext('2d');
+	init();
+}
+
+function init() {
+	window.requestAnimationFrame(draw);
+
+
+}
+
+function draw() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	if (piece) {
+		piece.position.y++;
+	} else {
+		const n = Math.floor(Math.random() * pieces.length);
+		piece = new Piece(pieces[n][0].length);
+		const rPiece = pieces[n][Math.floor(Math.random() * pieces[n].length)];
+		piece.set(rPiece);
+		piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - (n / 2));
+	}
+	drawPiece();
+
+	window.requestAnimationFrame(draw);
+}
+
+function drawPiece() {
+	ctx.fillStyle = piece.color;
+	for (var x = 0; x < piece.grid.length; x++) {
+		for (var y = 0; y < piece.grid[0].length; y++) {
+			if (piece.grid[x][y]) {
+				const px = (piece.position.x + x) * squareSize;
+				const py = y * squareSize + piece.position.y;
+				ctx.fillRect(px, py, squareSize - 2, squareSize - 2);
+			}
+		}
+	}
+}
+
+function onKeyUp(e) {
+	delete keysDown[e.key];
+}
+
+function onKeyDown(e) {
+	if (gameEndTime && new Date() - gameEndTime > gameEndDelay) {
+		init();
+	} else {
+		keysDown[e.key] = true;
+	}
 }
 
 function renderPiece(piece) {
@@ -28,8 +81,11 @@ function generatePiecesTable() {
 		const pieces = generatePieces(maxN);
 		document.getElementById('spinner').className = 'hidden';
 		document.getElementById('go-button').className = '';
+		var out = [];
 		var html = '';
 		for (var n in pieces) {
+			const levelPieces = [];
+			out.push(levelPieces);
 			// console.log(`=== ${n} ===`);
 			n = parseInt(n);
 			html += `<div class="pieces-header">${pieces[n].length} &nbsp;&nbsp;${n + 1}-tris pieces :</div>`;
@@ -37,6 +93,16 @@ function generatePiecesTable() {
 			html += '<table class="pieces-table">';
 			var pieceNum = 0;
 			for (const piece of pieces[n]) {
+				const grid01 = [];
+				levelPieces.push(grid01);
+				for (const col of piece.grid) {
+					const gridCol = [];
+					grid01.push(gridCol);
+					for (const square of col) {
+						gridCol.push(square ? 1 : 0);
+					}
+				}
+
 				// console.log(`=== pieceNum ${pieceNum} ===`);
 				// displayPiece(piece);
 				html += generatePieceHtml(piece, pieceNum++);
@@ -45,25 +111,14 @@ function generatePiecesTable() {
 			html += '</div>';
 		}
 		document.getElementById('pieces-table-container').innerHTML = html;
+		console.log('OUTPUT:');
+		console.log(JSON.stringify(out));
 	}, 0);
 }
 
 function generatePieceHtml(piece, num) {
 	var tableRows = '';
-	const rgb = hsvToRgb(num / piece.grid.length, 1, 0.6);
-	var r = rgb.r.toString(16);
-	if (r.length < 2) {
-		r = '0' + r;
-	}
-	var g = rgb.g.toString(16);
-	if (g.length < 2) {
-		g = '0' + g;
-	}
-	var b = rgb.b.toString(16);
-	if (b.length < 2) {
-		b = '0' + b;
-	}
-	var color = `#${r}${g}${b}`;
+	const color = hsvToRgb(num / piece.grid.length, 1, 0.6);
 	for (const col of piece.grid) {
 		tableRows += '<tr>';
 		for (const square of col) {
@@ -97,7 +152,6 @@ function generatePieces(n) {
 			if (!dupIndexes.includes(pieceNum)) {
 				for (var k = pieceNum + 1; k < pieces[i].length; k++) {
 					if (!dupIndexes.includes(k)) {
-						// TODO copy??
 						const testingPiece = pieces[i][k];
 						if (testingPiece.equals(piece)) {
 							dupIndexes.push(k);
@@ -154,33 +208,4 @@ function addOneSquare(p) {
 		}
 	}
 	return pieces;
-}
-
-/**
- * in:  0 <= h, s, v <= 1
- * out: 0 <= r, g, b <= 255
- */
-function hsvToRgb(h, s, v) {
-	var r, g, b, i, f, p, q, t;
-	if (arguments.length === 1) {
-		s = h.s, v = h.v, h = h.h;
-	}
-	i = Math.floor(h * 6);
-	f = h * 6 - i;
-	p = v * (1 - s);
-	q = v * (1 - f * s);
-	t = v * (1 - (1 - f) * s);
-	switch (i % 6) {
-		case 0: r = v, g = t, b = p; break;
-		case 1: r = q, g = v, b = p; break;
-		case 2: r = p, g = v, b = t; break;
-		case 3: r = p, g = q, b = v; break;
-		case 4: r = t, g = p, b = v; break;
-		case 5: r = v, g = p, b = q; break;
-	}
-	return {
-		r: Math.round(r * 255),
-		g: Math.round(g * 255),
-		b: Math.round(b * 255)
-	};
 }

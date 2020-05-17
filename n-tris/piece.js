@@ -1,5 +1,11 @@
 function Piece(n) {
 	this.grid = [];
+	this.position = {
+		x: 0,
+		y: 0
+	};
+	this.color = null;
+
 	for (var x = 0; x < n; x++) {
 		const row = [];
 		for (var y = 0; y < n; y++) {
@@ -7,6 +13,20 @@ function Piece(n) {
 		}
 		this.grid.push(row);
 	}
+
+	this.set = piece => {
+		var n = 0;
+		for (var x = 0; x < this.grid.length; x++) {
+			for (var y = 0; y < this.grid[0].length; y++) {
+				this.grid[x][y] = piece[x][y];
+				if (this.grid[x][y]) {
+					n += (17 * (x + 1)) + (23 * (y + 1));
+				}
+			}
+		}
+		this.color = hsvToRgb((n % 100) / 100, 1, 0.9);
+
+	};
 
 	this.copy = () => {
 		const copy = new Piece(this.grid.length);
