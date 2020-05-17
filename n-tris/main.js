@@ -5,40 +5,148 @@
 // 	[false, false, false, false],
 // ];
 
+// const testState = [
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+// ];
+
 const gameEndDelay = 2000;
 const squareSize = 20;
+const width = 22;
+const height = 40;
 
 var canvas, ctx;
 const keysDown = {};
 var gameEndTime;
 var piece;
+var state;
 
 function onLoad() {
 	canvas = document.getElementById('game-canvas');
 	ctx = canvas.getContext('2d');
+	canvas.width = width * squareSize;
+	canvas.height = height * squareSize;
 	init();
 }
 
 function init() {
+	// state = testState;
+	state = [];
+	for (var x = 0; x < width; x++) {
+		const col = [];
+		for (var y = 0; y < height; y++) {
+			col.push(null);
+		}
+		state.push(col);
+	}
 	window.requestAnimationFrame(draw);
-
-
 }
 
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	var isAtBottom = false;
 	if (piece) {
-		piece.position.y++;
+		for (var x = piece.min.x; x <= piece.max.x && state[piece.position.x + x]; x++) {
+			var maxY = 0;
+			for (var py = 0; py <= piece.max.y; py++) {
+				if (piece.grid[x][py] && py > maxY) {
+					maxY = py;
+				}
+			}
+			if (state[piece.position.x + x][Math.floor(piece.position.y / squareSize) + maxY + 1]) {
+				isAtBottom = true;
+				break;
+			}
+		}
+	}
+
+	if (piece && piece.position.y < canvas.height - ((piece.max.y + 1) * squareSize) && !isAtBottom) {
+		piece.position.y += 2;
 	} else {
+		if (piece) {
+			for (var x = piece.min.x; x <= piece.max.x; x++) {
+				for (var y = piece.min.y; y <= piece.max.y; y++) {
+					if (piece.grid[x][y]) {
+						state[piece.position.x + x][Math.floor(piece.position.y / squareSize) + y] = piece.color;
+					}
+				}
+			}
+
+			clearLines();
+		}
 		const n = Math.floor(Math.random() * pieces.length);
 		piece = new Piece(pieces[n][0].length);
 		const rPiece = pieces[n][Math.floor(Math.random() * pieces[n].length)];
 		piece.set(rPiece);
-		piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - (n / 2));
+		piece.normalize();
+		const centerX = piece.center.x;
+		piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - centerX - 1);
 	}
+
+	drawState();
 	drawPiece();
 
+	// ctx.strokeStyle = 'white';
+	// ctx.lineWidth = 1;
+	// ctx.beginPath();
+	// ctx.moveTo(canvas.width / 2, 0);
+	// ctx.lineTo(canvas.width / 2, canvas.height);
+	// ctx.stroke();
+
 	window.requestAnimationFrame(draw);
+}
+
+function clearLines() {
+	const toClear = [];
+	for (var y = state[0].length - 1; y >= 0; y--) {
+		var isFullLine = true;
+		for (var x = 0; x < state.length; x++) {
+			if (!state[x][y]) {
+				isFullLine = false;
+				break;
+			}
+		}
+		if (isFullLine) {
+			toClear.push(y);
+		}
+	}
+
+	if (toClear.length > 0) {
+		console.log('toClear', toClear);
+	}
+
+	for (const line of toClear) {
+		for (var n = line; n >= 0; n--) {
+			for (var x = 0; x < state.length; x++) {
+				state[x][n] = state[x][n - 1];
+			}
+		}
+	}
+}
+
+function drawState() {
+	// console.log('state', state);
+	for (var x = 0; x < state.length; x++) {
+		for (var y = 0; y < state[x].length; y++) {
+			if (state[x][y]) {
+				// console.log(state[x][y]);
+				ctx.fillStyle = state[x][y];
+				const px = x * squareSize;
+				const py = y * squareSize;
+				ctx.fillRect(px, py, squareSize - 2, squareSize - 2);
+			}
+		}
+	}
 }
 
 function drawPiece() {
@@ -52,6 +160,11 @@ function drawPiece() {
 			}
 		}
 	}
+	// ctx.strokeStyle = 'white';
+	// ctx.lineWidth = 2;
+	// ctx.beginPath();
+	// ctx.rect(piece.position.x * squareSize, piece.position.y, piece.grid.length * squareSize, piece.grid[0].length * squareSize);
+	// ctx.stroke();
 }
 
 function onKeyUp(e) {
@@ -62,7 +175,44 @@ function onKeyDown(e) {
 	if (gameEndTime && new Date() - gameEndTime > gameEndDelay) {
 		init();
 	} else {
+		// console.log(e.key);
 		keysDown[e.key] = true;
+		if (keysDown.ArrowLeft || keysDown.ArrowRight) {
+			if (keysDown.Shift) {
+				piece.rotate(keysDown.ArrowLeft ? 'left' : 'right');
+			} else {
+				var newX = null;
+				if (keysDown.ArrowLeft) {
+					if (piece.position.x > -piece.min.x) {
+						newX = piece.position.x - 1;
+					}
+				} else if (keysDown.ArrowRight) {
+					// console.log('***');
+					// console.log('piece.position.x ', piece.position.x);
+					// console.log('piece.grid.length ', piece.grid.length);
+					// console.log('piece.max.x', piece.max.x);
+					if (piece.position.x + piece.max.x < width - 1) {
+						newX = piece.position.x + 1;
+					}
+				}
+
+				if (newX != null) {
+					var isOverlap = false;
+					for (var x = piece.min.x; x <= piece.max.x && state[newX + x]; x++) {
+						for (var y = piece.min.y; y <= piece.max.y; y++) {
+							if (piece.grid[x][y] && state[newX + x][y + Math.floor(piece.position.y / squareSize)]) {
+								isOverlap = true;
+								break;
+							}
+						}
+					}
+
+					if (!isOverlap) {
+						piece.position.x = newX;
+					}
+				}
+			}
+		}
 	}
 }
 

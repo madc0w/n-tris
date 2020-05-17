@@ -5,6 +5,9 @@ function Piece(n) {
 		y: 0
 	};
 	this.color = null;
+	this.min = null;
+	this.max = null;
+	this.center = null;
 
 	for (var x = 0; x < n; x++) {
 		const row = [];
@@ -14,27 +17,46 @@ function Piece(n) {
 		this.grid.push(row);
 	}
 
-	this.set = piece => {
+	this.set = (pieceGrid, isSuppressColorChange) => {
 		var n = 0;
 		for (var x = 0; x < this.grid.length; x++) {
 			for (var y = 0; y < this.grid[0].length; y++) {
-				this.grid[x][y] = piece[x][y];
-				if (this.grid[x][y]) {
+				this.grid[x][y] = pieceGrid[x][y];
+				if (!isSuppressColorChange && this.grid[x][y]) {
 					n += (17 * (x + 1)) + (23 * (y + 1));
 				}
 			}
 		}
-		this.color = hsvToRgb((n % 100) / 100, 1, 0.9);
-
+		if (!isSuppressColorChange) {
+			this.color = hsvToRgb((n % 256) / 256, 1, 0.9);
+		}
+		this.min = {
+			x: this.grid.length,
+			y: this.grid[0].length
+		};
+		this.max = {
+			x: 0,
+			y: 0
+		};
+		for (var x = 0; x < this.grid.length; x++) {
+			for (var y = 0; y < this.grid[x].length; y++) {
+				if (this.grid[x][y]) {
+					this.min.x = Math.min(this.min.x, x);
+					this.min.y = Math.min(this.min.y, y);
+					this.max.x = Math.max(this.max.x, x);
+					this.max.y = Math.max(this.max.y, y);
+				}
+			}
+		}
+		this.center = {
+			x: Math.floor(this.min.x + (this.max.x - this.min.x) / 2),
+			y: Math.floor(this.min.y + (this.max.y - this.min.y) / 2),
+		};
 	};
 
 	this.copy = () => {
 		const copy = new Piece(this.grid.length);
-		for (var x = 0; x < this.grid.length; x++) {
-			for (var y = 0; y < this.grid[0].length; y++) {
-				copy.grid[x][y] = this.grid[x][y];
-			}
-		}
+		copy.set(this);
 		return copy;
 	};
 
@@ -80,34 +102,19 @@ function Piece(n) {
 			}
 		}
 		newPiece.normalize();
-		for (var x = 0; x < this.grid.length; x++) {
-			for (var y = 0; y < this.grid[x].length; y++) {
-				this.grid[x][y] = newPiece.grid[x][y];
-			}
-		}
+		this.set(newPiece.grid, true);
 	};
 
 	this.normalize = () => {
-		var minX = this.grid.length;
-		var minY = this.grid[0].length;
+		if (this.min == null) {
+			this.set(this.grid, true);
+		}
 		for (var x = 0; x < this.grid.length; x++) {
 			for (var y = 0; y < this.grid[x].length; y++) {
-				if (this.grid[x][y]) {
-					minX = Math.min(minX, x);
-					minY = Math.min(minY, y);
-				}
+				this.grid[x][y] = (this.grid[x + this.min.x] || [false])[y + this.min.y] || false;
 			}
 		}
-
-		for (var x = 0; x < this.grid.length; x++) {
-			for (var y = 0; y < this.grid[x].length; y++) {
-				this.grid[x][y] = (this.grid[x + minX] || [false])[y + minY] || false;
-			}
-		}
-		return {
-			minX,
-			minY
-		};
+		this.set(this.grid, true);
 	};
 
 	this.equals = (p2) => {
