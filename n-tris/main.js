@@ -33,6 +33,7 @@ const keysDown = {};
 var gameEndTime;
 var piece;
 var state;
+var prevYVel;
 
 function onLoad() {
 	canvas = document.getElementById('game-canvas');
@@ -200,6 +201,9 @@ function drawPiece() {
 
 function onKeyUp(e) {
 	delete keysDown[e.code];
+	if (prevYVel) {
+		yVel = prevYVel;
+	}
 }
 
 function onKeyDown(e) {
@@ -208,7 +212,12 @@ function onKeyDown(e) {
 	} else {
 		keysDown[e.code] = true;
 		// console.log('keysDown', keysDown);
-		if (keysDown.Space) {
+		if (keysDown.ArrowDown) {
+			if (yVel < maxYVel) {
+				prevYVel = yVel;
+				yVel = maxYVel;
+			}
+		} else if (keysDown.Space) {
 			// drop piece
 			const pieceMaxY = [];
 			const boardMaxY = [];
