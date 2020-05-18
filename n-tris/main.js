@@ -103,13 +103,6 @@ function draw() {
 	drawState();
 	drawPiece();
 
-	// ctx.strokeStyle = 'white';
-	// ctx.lineWidth = 1;
-	// ctx.beginPath();
-	// ctx.moveTo(canvas.width / 2, 0);
-	// ctx.lineTo(canvas.width / 2, canvas.height);
-	// ctx.stroke();
-
 	window.requestAnimationFrame(draw);
 }
 
@@ -163,6 +156,18 @@ function drawPiece() {
 			}
 		}
 	}
+
+	ctx.strokeStyle = '#cfc';
+	ctx.lineWidth = 1;
+	ctx.beginPath();
+	ctx.moveTo(piece.position.x * squareSize, piece.position.y + (piece.max.y + 1) * squareSize);
+	ctx.lineTo(piece.position.x * squareSize, canvas.height);
+	ctx.stroke();
+	ctx.beginPath();
+	ctx.moveTo((piece.position.x + piece.max.x + 1) * squareSize - 2, piece.position.y + (piece.max.y + 1) * squareSize);
+	ctx.lineTo((piece.position.x + piece.max.x + 1) * squareSize - 2, canvas.height);
+	ctx.stroke();
+
 	// ctx.strokeStyle = 'white';
 	// ctx.lineWidth = 2;
 	// ctx.beginPath();
@@ -171,17 +176,55 @@ function drawPiece() {
 }
 
 function onKeyUp(e) {
-	delete keysDown[e.key];
+	delete keysDown[e.code];
 }
 
 function onKeyDown(e) {
 	if (gameEndTime && new Date() - gameEndTime > gameEndDelay) {
 		init();
 	} else {
-		// console.log(e.key);
-		keysDown[e.key] = true;
-		if (keysDown.ArrowLeft || keysDown.ArrowRight) {
-			if (keysDown.Shift) {
+		keysDown[e.code] = true;
+		// console.log('keysDown', keysDown);
+		if (keysDown.Space) {
+			const pieceMaxY = [];
+			const boardMaxY = [];
+			for (var x = piece.min.x; x <= piece.max.x; x++) {
+				for (var y = piece.min.y; y <= piece.max.y; y++) {
+					if (piece.grid[x][y]) {
+						pieceMaxY[x] = Math.max(y, pieceMaxY[x] || 0);
+					}
+				}
+
+				for (var y = Math.floor(piece.position.y / squareSize); y < height; y++) {
+					if (state[x + piece.position.x][y]) {
+						boardMaxY[x] = height - y;
+						break;
+					}
+				}
+			}
+			var maxX = 0;
+			var maxY = 0;
+			for (const x in pieceMaxY) {
+				const y = pieceMaxY[x] + (boardMaxY[x] || 0);
+				if (y > maxY) {
+					maxY = y;
+					maxX = x;
+				}
+			}
+
+			for (var x = piece.min.x; x <= piece.max.x; x++) {
+				for (var y = piece.min.y; y <= piece.max.y; y++) {
+					if (piece.grid[x][y]) {
+						state[piece.position.x + x][(height - (boardMaxY[maxX] || 0) - pieceMaxY[maxX]) + y - 1] = piece.color;
+					}
+				}
+			}
+
+			piece = null;
+
+		} else if (keysDown.ArrowLeft || keysDown.ArrowRight) {
+			if (keysDown.ShiftLeft || keysDown.ShiftRight) {
+				// TODO check if rotation would intersect game grid
 				piece.rotate(keysDown.ArrowLeft ? 'left' : 'right');
 			} else {
 				var newX = null;
