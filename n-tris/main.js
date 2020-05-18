@@ -24,6 +24,9 @@ const gameEndDelay = 2000;
 const squareSize = 20;
 const width = 22;
 const height = 40;
+const yAcceleration = 0.0001;
+const maxYVel = 3.6;
+var yVel = 1.2;
 
 var canvas, ctx;
 const keysDown = {};
@@ -71,7 +74,11 @@ function draw() {
 	}
 
 	if (piece && piece.position.y < canvas.height - ((piece.max.y + 1) * squareSize) && !isAtBottom) {
-		piece.position.y = 200;
+		piece.position.y += yVel;
+		if (yVel < maxYVel) {
+			yVel += yAcceleration;
+		}
+		// console.log('yVel', yVel);
 	} else {
 		if (piece) {
 			for (var x = piece.min.x; x <= piece.max.x; x++) {
