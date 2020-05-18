@@ -23,7 +23,7 @@
 const gameEndDelay = 2000;
 const squareSize = 20;
 const width = 22;
-const height = 40;
+const height = 32;
 const yAcceleration = 0.0001;
 const maxYVel = 3.6;
 var yVel = 1.2;
@@ -80,24 +80,42 @@ function draw() {
 		}
 		// console.log('yVel', yVel);
 	} else {
+		var isSlidingPiece = false;
 		if (piece) {
-			for (var x = piece.min.x; x <= piece.max.x; x++) {
-				for (var y = piece.min.y; y <= piece.max.y; y++) {
-					if (piece.grid[x][y]) {
-						state[piece.position.x + x][Math.floor(piece.position.y / squareSize) + y] = piece.color;
+			if (keysDown.ArrowLeft || keysDown.ArrowRight) {
+				var newX = null;
+				if (keysDown.ArrowLeft) {
+					if (piece.position.x > -piece.min.x) {
+						newX = piece.position.x - 1;
+					}
+				} else if (keysDown.ArrowRight) {
+					if (piece.position.x + piece.max.x < width - 1) {
+						newX = piece.position.x + 1;
 					}
 				}
-			}
+				isSlidingPiece = setPieceX(newX);
+			} else {
+				for (var x = piece.min.x; x <= piece.max.x; x++) {
+					for (var y = piece.min.y; y <= piece.max.y; y++) {
+						if (piece.grid[x][y]) {
+							state[piece.position.x + x][Math.floor(piece.position.y / squareSize) + y] = piece.color;
+						}
+					}
+				}
 
-			clearLines();
+				clearLines();
+			}
 		}
-		const n = Math.floor(Math.random() * pieces.length);
-		piece = new Piece(pieces[n][0].length);
-		const rPiece = pieces[n][Math.floor(Math.random() * pieces[n].length)];
-		piece.set(rPiece);
-		piece.normalize();
-		const centerX = piece.center.x;
-		piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - centerX - 1);
+
+		if (!isSlidingPiece) {
+			const n = Math.floor(Math.random() * pieces.length);
+			piece = new Piece(pieces[n][0].length);
+			const rPiece = pieces[n][Math.floor(Math.random() * pieces[n].length)];
+			piece.set(rPiece);
+			piece.normalize();
+			const centerX = piece.center.x;
+			piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - centerX - 1);
+		}
 	}
 
 	drawState();
@@ -186,6 +204,7 @@ function onKeyDown(e) {
 		keysDown[e.code] = true;
 		// console.log('keysDown', keysDown);
 		if (keysDown.Space) {
+			// drop piece
 			const pieceMaxY = [];
 			const boardMaxY = [];
 			for (var x = piece.min.x; x <= piece.max.x; x++) {
@@ -241,23 +260,27 @@ function onKeyDown(e) {
 						newX = piece.position.x + 1;
 					}
 				}
+				setPieceX(newX);
+			}
+		}
+	}
+}
 
-				if (newX != null) {
-					var isOverlap = false;
-					for (var x = piece.min.x; x <= piece.max.x && state[newX + x]; x++) {
-						for (var y = piece.min.y; y <= piece.max.y; y++) {
-							if (piece.grid[x][y] && state[newX + x][y + Math.floor(piece.position.y / squareSize)]) {
-								isOverlap = true;
-								break;
-							}
-						}
-					}
-
-					if (!isOverlap) {
-						piece.position.x = newX;
-					}
+function setPieceX(newX) {
+	if (newX != null) {
+		var isOverlap = false;
+		for (var x = piece.min.x; x <= piece.max.x && state[newX + x]; x++) {
+			for (var y = piece.min.y; y <= piece.max.y; y++) {
+				if (piece.grid[x][y] && state[newX + x][y + Math.floor(piece.position.y / squareSize)]) {
+					isOverlap = true;
+					break;
 				}
 			}
+		}
+
+		if (!isOverlap) {
+			piece.position.x = newX;
+			return true;
 		}
 	}
 }
