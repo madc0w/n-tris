@@ -93,7 +93,7 @@ function Piece(n) {
 		for (var x = 0; x < this.grid.length; x++) {
 			for (var y = 0; y < this.grid[x].length; y++) {
 				var px, py;
-				if (!direction || direction == 'left') {
+				if (!direction || direction == 'right') {
 					px = rPoint.y - y;
 					py = x - rPoint.x;
 				} else {

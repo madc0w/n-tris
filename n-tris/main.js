@@ -71,7 +71,7 @@ function draw() {
 	}
 
 	if (piece && piece.position.y < canvas.height - ((piece.max.y + 1) * squareSize) && !isAtBottom) {
-		piece.position.y += 2;
+		piece.position.y = 200;
 	} else {
 		if (piece) {
 			for (var x = piece.min.x; x <= piece.max.x; x++) {
@@ -119,10 +119,6 @@ function clearLines() {
 		if (isFullLine) {
 			toClear.push(y);
 		}
-	}
-
-	if (toClear.length > 0) {
-		console.log('toClear', toClear);
 	}
 
 	for (const line of toClear) {
