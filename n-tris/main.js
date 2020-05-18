@@ -83,6 +83,7 @@ function draw() {
 		var isSlidingPiece = false;
 		if (piece) {
 			if (keysDown.ArrowLeft || keysDown.ArrowRight) {
+				// console.log('piece.position', piece.position);
 				var newX = null;
 				if (keysDown.ArrowLeft) {
 					if (piece.position.x > -piece.min.x) {
@@ -93,8 +94,12 @@ function draw() {
 						newX = piece.position.x + 1;
 					}
 				}
+				// console.log('newX', newX);
 				isSlidingPiece = setPieceX(newX);
-			} else {
+				// console.log('isSlidingPiece ', isSlidingPiece);
+			}
+
+			if (!isSlidingPiece) {
 				for (var x = piece.min.x; x <= piece.max.x; x++) {
 					for (var y = piece.min.y; y <= piece.max.y; y++) {
 						if (piece.grid[x][y]) {
@@ -268,20 +273,16 @@ function onKeyDown(e) {
 
 function setPieceX(newX) {
 	if (newX != null) {
-		var isOverlap = false;
 		for (var x = piece.min.x; x <= piece.max.x && state[newX + x]; x++) {
 			for (var y = piece.min.y; y <= piece.max.y; y++) {
 				if (piece.grid[x][y] && state[newX + x][y + Math.floor(piece.position.y / squareSize)]) {
-					isOverlap = true;
-					break;
+					return false;
 				}
 			}
 		}
 
-		if (!isOverlap) {
-			piece.position.x = newX;
-			return true;
-		}
+		piece.position.x = newX;
+		return true;
 	}
 }
 
