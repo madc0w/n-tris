@@ -24,9 +24,13 @@ const gameEndDelay = 2000;
 const squareSize = 20;
 const width = 22;
 const height = 32;
-const yAcceleration = 0.0001;
-const maxYVel = 3.6;
+const yAcceleration = 0.0002;
+const maxYVel = 4.2;
 var yVel = 1.2;
+
+const sounds = {
+	click: new Audio('click.mp3'),
+};
 
 var canvas, ctx;
 const keysDown = {};
@@ -114,6 +118,7 @@ function draw() {
 		}
 
 		if (!isSlidingPiece) {
+			playSound(sounds.click);
 			const n = Math.floor(Math.random() * pieces.length);
 			piece = new Piece(pieces[n][0].length);
 			const rPiece = pieces[n][Math.floor(Math.random() * pieces[n].length)];
@@ -217,7 +222,7 @@ function onKeyDown(e) {
 				prevYVel = yVel;
 				yVel = maxYVel;
 			}
-		} else if (keysDown.Space) {
+		} else if (keysDown.Space || keysDown.ArrowUp) {
 			// drop piece
 			const pieceMaxY = [];
 			const boardMaxY = [];
@@ -255,7 +260,8 @@ function onKeyDown(e) {
 
 			piece = null;
 
-		} else if (keysDown.ArrowLeft || keysDown.ArrowRight) {
+		}
+		if (keysDown.ArrowLeft || keysDown.ArrowRight) {
 			if (keysDown.ShiftLeft || keysDown.ShiftRight) {
 				// TODO check if rotation would intersect game grid
 				piece.rotate(keysDown.ArrowLeft ? 'left' : 'right');
@@ -284,7 +290,7 @@ function setPieceX(newX) {
 	if (newX != null) {
 		for (var x = piece.min.x; x <= piece.max.x && state[newX + x]; x++) {
 			for (var y = piece.min.y; y <= piece.max.y; y++) {
-				if (piece.grid[x][y] && state[newX + x][y + Math.floor(piece.position.y / squareSize)]) {
+				if (piece.grid[x][y] && state[newX + x][y + Math.ceil(piece.position.y / squareSize)]) {
 					return false;
 				}
 			}
@@ -437,4 +443,20 @@ function addOneSquare(p) {
 		}
 	}
 	return pieces;
+}
+
+function playSound(_sound) {
+	for (const sound in sounds) {
+		sounds[sound].pause();
+		sounds[sound].currentTime = 0;
+	}
+	const promise = _sound.play();
+	if (promise !== undefined) {
+		promise.then(_ => {
+			// Autoplay started!
+		}).catch(error => {
+			// Autoplay was prevented.
+			// Show a "Play" button so that user can start playback.
+		});
+	}
 }
