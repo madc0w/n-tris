@@ -61,6 +61,9 @@ function init() {
 }
 
 function draw() {
+	if (gameEndTime) {
+		return;
+	}
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	var isAtBottom = false;
 	if (piece) {
@@ -119,13 +122,17 @@ function draw() {
 
 		if (!isSlidingPiece) {
 			playSound(sounds.click);
-			const n = Math.floor(Math.random() * pieces.length);
-			piece = new Piece(pieces[n][0].length);
-			const rPiece = pieces[n][Math.floor(Math.random() * pieces[n].length)];
-			piece.set(rPiece);
-			piece.normalize();
-			const centerX = piece.center.x;
-			piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - centerX - 1);
+			if (piece && piece.position.y == 0) {
+				gameEndTime = new Date();
+			} else {
+				const n = Math.floor(Math.random() * pieces.length);
+				piece = new Piece(pieces[n][0].length);
+				const rPiece = pieces[n][Math.floor(Math.random() * pieces[n].length)];
+				piece.set(rPiece);
+				piece.normalize();
+				const centerX = piece.center.x;
+				piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - centerX - 1);
+			}
 		}
 	}
 
@@ -214,7 +221,7 @@ function onKeyUp(e) {
 function onKeyDown(e) {
 	if (gameEndTime && new Date() - gameEndTime > gameEndDelay) {
 		init();
-	} else {
+	} else if (!gameEndTime) {
 		keysDown[e.code] = true;
 		// console.log('keysDown', keysDown);
 		if (keysDown.ArrowDown) {
@@ -450,13 +457,5 @@ function playSound(_sound) {
 		sounds[sound].pause();
 		sounds[sound].currentTime = 0;
 	}
-	const promise = _sound.play();
-	if (promise !== undefined) {
-		promise.then(_ => {
-			// Autoplay started!
-		}).catch(error => {
-			// Autoplay was prevented.
-			// Show a "Play" button so that user can start playback.
-		});
-	}
+	_sound.play();
 }
