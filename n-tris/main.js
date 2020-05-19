@@ -30,6 +30,7 @@ var yVel = 1.2;
 
 const sounds = {
 	click: new Audio('click.mp3'),
+	gameOver: new Audio('game-over.mp3'),
 };
 
 var canvas, ctx;
@@ -57,11 +58,15 @@ function init() {
 		}
 		state.push(col);
 	}
+	gameEndTime = null;
 	window.requestAnimationFrame(draw);
 }
 
 function draw() {
 	if (gameEndTime) {
+		ctx.fillStyle = '#eee';
+		ctx.font = 'bold 42px Arial';
+		ctx.fillText('GAME OVER', (canvas.width / 2) - 128, (canvas.height / 2) - 8);
 		return;
 	}
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -124,6 +129,7 @@ function draw() {
 			playSound(sounds.click);
 			if (piece && piece.position.y == 0) {
 				gameEndTime = new Date();
+				playSound(sounds.gameOver);
 			} else {
 				const n = Math.floor(Math.random() * pieces.length);
 				piece = new Piece(pieces[n][0].length);
