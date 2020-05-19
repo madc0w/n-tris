@@ -28,9 +28,11 @@ const yAcceleration = 0.0002;
 const maxYVel = 4.2;
 var yVel = 1.2;
 
+// https://freesound.org/browse/tags/sound-effects/
 const sounds = {
 	click: new Audio('click.mp3'),
 	gameOver: new Audio('game-over.mp3'),
+	boom: new Audio('boom.mp3'),
 };
 
 var canvas, ctx;
@@ -170,6 +172,12 @@ function clearLines() {
 			}
 		}
 	}
+
+	if (toClear.length > 0) {
+		setTimeout(() => {
+			playSound(sounds.boom);
+		}, 40);
+	}
 }
 
 function drawState() {
@@ -272,9 +280,9 @@ function onKeyDown(e) {
 			}
 
 			piece = null;
-
+			clearLines();
 		}
-		if (keysDown.ArrowLeft || keysDown.ArrowRight) {
+		if (piece && (keysDown.ArrowLeft || keysDown.ArrowRight)) {
 			if (keysDown.ShiftLeft || keysDown.ShiftRight) {
 				// TODO check if rotation would intersect game grid
 				piece.rotate(keysDown.ArrowLeft ? 'left' : 'right');
@@ -303,7 +311,8 @@ function setPieceX(newX) {
 	if (newX != null) {
 		for (var x = piece.min.x; x <= piece.max.x && state[newX + x]; x++) {
 			for (var y = piece.min.y; y <= piece.max.y; y++) {
-				if (piece.grid[x][y] && state[newX + x][y + Math.ceil(piece.position.y / squareSize)]) {
+				const boardY = y + Math.ceil(piece.position.y / squareSize);
+				if (piece.grid[x][y] && (state[newX + x][boardY] || state[newX + x][boardY - 1])) {
 					return false;
 				}
 			}
