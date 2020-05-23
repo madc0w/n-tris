@@ -305,7 +305,7 @@ function onKeyDown(e) {
 					piece = null;
 					clearLines();
 				}
-			}, 80);
+			}, 120);
 		}
 		if (piece && (keysDown.ArrowLeft || keysDown.ArrowRight)) {
 			if (keysDown.ShiftLeft || keysDown.ShiftRight) {
