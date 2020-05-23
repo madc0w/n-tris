@@ -37,24 +37,21 @@ const height = 32;
 const yAcceleration = 0.00024;
 const maxYVel = 6.2;
 const minPieceSize = 3;
-var yVel = 1.4;
+const dropSlideTestDelayMs = 120;
+const initYVel = 1.4;
 
 // https://freesound.org/browse/tags/sound-effects/
 const sounds = {
 	click: new Audio('click.mp3'),
 	gameOver: new Audio('game-over.mp3'),
-	boom: new Audio('boom.mp3'),
+	boom: new Audio('boom-2.mp3'),
+	rotateRight: new Audio('rotate-right.mp3'),
+	rotateLeft: new Audio('rotate-left.mp3'),
 };
 
-var canvas, ctx;
 const keysDown = {};
-var gameEndTime;
-var piece;
-var state;
-var prevYVel;
-var dropSlidePiece = null;
-var isDropSlideTest = false;
 const backgroundImage = new Image();
+var canvas, ctx, yVel, gameEndTime, piece, state, prevYVel, dropSlidePiece, isDropSlideTest = false;
 
 function onLoad() {
 	canvas = document.getElementById('game-canvas');
@@ -82,16 +79,17 @@ function init() {
 		state.push(col);
 	}
 	gameEndTime = null;
+	yVel = initYVel;
 	window.requestAnimationFrame(draw);
 }
 
 function draw() {
 	if (gameEndTime) {
-		const x = (canvas.width / 2) - 190;
-		const y = (canvas.height / 2) - 8;
+		const x = (canvas.width / 2) - 156;
+		const y = (canvas.height / 2) - 18;
 		const text = 'GAME OVER';
 		ctx.fillStyle = '#eee';
-		ctx.font = 'bold 62px Lato';
+		ctx.font = 'bold 52px Lato';
 		ctx.strokeStyle = '#000';
 		ctx.lineWidth = 8;
 		ctx.strokeText(text, x, y);
@@ -261,7 +259,7 @@ function onKeyUp(e) {
 function onKeyDown(e) {
 	if (gameEndTime && new Date() - gameEndTime > gameEndDelay) {
 		init();
-	} else if (!gameEndTime) {
+	} else if (piece && !gameEndTime) {
 		keysDown[e.code] = true;
 		// console.log('keysDown', keysDown);
 		if (keysDown.ArrowDown) {
@@ -269,7 +267,7 @@ function onKeyDown(e) {
 				prevYVel = yVel;
 				yVel = maxYVel;
 			}
-		} else if (keysDown.Space || keysDown.ArrowUp) {
+		} else if (!isDropSlideTest && (keysDown.Space || keysDown.ArrowUp)) {
 			// console.log('keysDown', keysDown);
 			// drop piece
 			const pieceMaxY = [];
@@ -281,15 +279,18 @@ function onKeyDown(e) {
 					}
 				}
 
-				for (var y = Math.floor(piece.position.y / squareSize); y < height; y++) {
-					if (state[x + piece.position.x][y]) {
-						boardMaxY[x] = height - y;
-						break;
+				if (x + piece.position.x < state.length) {
+					for (var y = Math.floor(piece.position.y / squareSize); y < height; y++) {
+						if (state[x + piece.position.x][y]) {
+							boardMaxY[x] = height - y;
+							break;
+						}
 					}
+				} else {
+					console.error();
 				}
 			}
-			var maxX = 0;
-			var maxY = 0;
+			var maxX = 0, maxY = 0;
 			for (const x in pieceMaxY) {
 				const y = pieceMaxY[x] + (boardMaxY[x] || 0);
 				if (y > maxY) {
@@ -317,12 +318,21 @@ function onKeyDown(e) {
 					piece = null;
 					clearLines();
 				}
-			}, 120);
+			}, dropSlideTestDelayMs);
 		}
-		if (piece && (keysDown.ArrowLeft || keysDown.ArrowRight)) {
+		if (keysDown.ArrowLeft || keysDown.ArrowRight) {
 			if (keysDown.ShiftLeft || keysDown.ShiftRight) {
 				// TODO check if rotation would intersect game grid
-				piece.rotate(keysDown.ArrowLeft ? 'left' : 'right');
+				var direction, sound;
+				if (keysDown.ArrowLeft) {
+					direction = 'left';
+					sound = sounds.rotateLeft;
+				} else {
+					direction = 'right';
+					sound = sounds.rotateRight;
+				}
+				piece.rotate(direction);
+				playSound(sound);
 			} else {
 				movePieceX();
 			}
@@ -355,150 +365,6 @@ function movePieceX() {
 
 	piece.position.x = newX;
 	return true;
-}
-
-function renderPiece(piece) {
-	var table = '<table class="pieces-table">';
-	table += generatePieceHtml(piece, 0);
-	table += '</table>';
-	document.getElementById('pieces-table-container').innerHTML = table;
-}
-
-function generatePiecesTable() {
-	document.getElementById('spinner').className = '';
-	document.getElementById('go-button').className = 'hidden';
-	const maxN = parseInt(document.getElementById('n-field').value);
-	setTimeout(() => {
-		const pieces = generatePieces(maxN);
-		document.getElementById('spinner').className = 'hidden';
-		document.getElementById('go-button').className = '';
-		var out = [];
-		var html = '';
-		for (var n in pieces) {
-			const levelPieces = [];
-			out.push(levelPieces);
-			// console.log(`=== ${n} ===`);
-			n = parseInt(n);
-			html += `<div class="pieces-header">${pieces[n].length} &nbsp;&nbsp;${n + 1}-tris pieces :</div>`;
-			html += '<div class="pieces-table-wrapper">';
-			html += '<table class="pieces-table">';
-			var pieceNum = 0;
-			for (const piece of pieces[n]) {
-				const grid01 = [];
-				levelPieces.push(grid01);
-				for (const col of piece.grid) {
-					const gridCol = [];
-					grid01.push(gridCol);
-					for (const square of col) {
-						gridCol.push(square ? 1 : 0);
-					}
-				}
-
-				// console.log(`=== pieceNum ${pieceNum} ===`);
-				// displayPiece(piece);
-				html += generatePieceHtml(piece, pieceNum++);
-			}
-			html += '</table>';
-			html += '</div>';
-		}
-		document.getElementById('pieces-table-container').innerHTML = html;
-		console.log('OUTPUT:');
-		console.log(JSON.stringify(out));
-	}, 0);
-}
-
-function generatePieceHtml(piece, num) {
-	var tableRows = '';
-	const color = hsvToRgb(num / piece.grid.length, 1, 0.6);
-	for (const col of piece.grid) {
-		tableRows += '<tr>';
-		for (const square of col) {
-			tableRows += '<td' + (square ? ` style="background-color: ${color};"` : '') + '/>';
-		}
-		tableRows += '</tr>';
-	}
-	return tableRows;
-}
-
-
-function generatePieces(n) {
-	const pieces = [];
-	const p = new Piece(n + 2);
-	pieces.push([p]);
-	const initSquarePos = Math.floor(n / 2);
-	p.grid[initSquarePos][initSquarePos] = true;
-
-	for (var i = 1; i < n; i++) {
-		console.log(`${new Date()} : generating ${i + 1}-tris pieces`);
-		for (const piece of pieces[i - 1]) {
-			pieces[i] = (pieces[i] || []).concat(addOneSquare(piece));
-		}
-	}
-
-	for (var i = 1; i < n; i++) {
-		console.log(`${new Date()} : filtering ${i + 1}-tris pieces`);
-		const dupIndexes = [];
-		for (var pieceNum = 0; pieceNum < pieces[i].length; pieceNum++) {
-			const piece = pieces[i][pieceNum];
-			if (!dupIndexes.includes(pieceNum)) {
-				for (var k = pieceNum + 1; k < pieces[i].length; k++) {
-					if (!dupIndexes.includes(k)) {
-						const testingPiece = pieces[i][k];
-						if (testingPiece.equals(piece)) {
-							dupIndexes.push(k);
-						}
-					}
-				}
-			}
-
-			if (pieceNum > 0 && pieceNum % 100 == 0) {
-				const percentDone = (100 * pieceNum / pieces[i].length).toFixed(1);
-				console.log(`${new Date()} : ${percentDone}%`);
-			}
-		}
-
-		const uniquePieces = [];
-		for (var pieceNum = 0; pieceNum < pieces[i].length; pieceNum++) {
-			if (!dupIndexes.includes(pieceNum)) {
-				uniquePieces.push(pieces[i][pieceNum]);
-			}
-		}
-		pieces[i] = uniquePieces;
-	}
-	console.log(`${new Date()} : DONE`);
-	return pieces;
-}
-
-function addOneSquare(p) {
-	const grid = p.grid;
-	const pieces = [];
-	for (var x = 0; x < grid.length; x++) {
-		for (var y = 0; y < grid[x].length; y++) {
-			if (grid[x][y]) {
-				if (x > 0 && !grid[x - 1][y]) {
-					const piece = p.copy();
-					piece.grid[x - 1][y] = true;
-					pieces.push(piece);
-				}
-				if (x < grid.length - 1 && !grid[x + 1][y]) {
-					const piece = p.copy();
-					piece.grid[x + 1][y] = true;
-					pieces.push(piece);
-				}
-				if (y > 0 && !grid[x][y - 1]) {
-					const piece = p.copy();
-					piece.grid[x][y - 1] = true;
-					pieces.push(piece);
-				}
-				if (y < grid.length - 1 && !grid[x][y + 1]) {
-					const piece = p.copy();
-					piece.grid[x][y + 1] = true;
-					pieces.push(piece);
-				}
-			}
-		}
-	}
-	return pieces;
 }
 
 function playSound(_sound) {
