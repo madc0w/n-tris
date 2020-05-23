@@ -5,34 +5,40 @@
 // 	[false, false, false, false],
 // ];
 
-const testState = [
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-];
+// const testState = [
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+// ];
 
 const gameEndDelay = 2000;
 const squareSize = 20;
-const width = 22;
+const width = 18;
 const height = 32;
-const yAcceleration = 0.0002;
+const yAcceleration = 0.00024;
 const maxYVel = 6.2;
-var yVel = 1.2;
+const minPieceSize = 3;
+var yVel = 1.4;
+
 
 // https://freesound.org/browse/tags/sound-effects/
 const sounds = {
@@ -47,7 +53,7 @@ var gameEndTime;
 var piece;
 var state;
 var prevYVel;
-var isDropSlide = false;
+var dropSlidePiece = null;
 var isDropSlideTest = false;
 
 function onLoad() {
@@ -55,6 +61,8 @@ function onLoad() {
 	ctx = canvas.getContext('2d');
 	canvas.width = width * squareSize;
 	canvas.height = height * squareSize;
+
+	document.getElementById('game-container').className = '';
 	init();
 }
 
@@ -90,7 +98,7 @@ function draw() {
 
 	if (!isDropSlideTest) {
 		var isAtBottom = false;
-		if (piece && !isDropSlide) {
+		if (piece && !dropSlidePiece) {
 			for (var x = piece.min.x; x <= piece.max.x && state[piece.position.x + x]; x++) {
 				var maxY = 0;
 				for (var py = 0; py <= piece.max.y; py++) {
@@ -106,8 +114,8 @@ function draw() {
 		}
 
 		if (piece && piece.position.y < canvas.height - ((piece.max.y + 1) * squareSize) && !isAtBottom) {
-			if (isDropSlide) {
-				isDropSlide = movePieceX();
+			if (dropSlidePiece) {
+				dropSlidePiece = movePieceX() ? piece : null;
 			} else {
 				piece.position.y += yVel;
 				if (yVel < maxYVel) {
@@ -144,7 +152,8 @@ function draw() {
 					gameEndTime = new Date();
 					playSound(sounds.gameOver);
 				} else {
-					const n = 1 + Math.floor(Math.random() * (pieces.length - 1));
+					const n = minPieceSize - 1 + Math.floor(Math.random() * (pieces.length - (minPieceSize - 1)));
+					// const n = 1;
 					piece = new Piece(pieces[n][0].length);
 					const m = Math.floor(Math.random() * pieces[n].length);
 					const rPiece = pieces[n][m];
@@ -153,6 +162,7 @@ function draw() {
 					piece.normalize();
 					const centerX = piece.center.x;
 					piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - centerX - 1);
+					// piece.position.y = 500;
 				}
 			}
 		}
@@ -286,14 +296,14 @@ function onKeyDown(e) {
 				}
 			}
 
+			piece.position.y = ((height - (boardMaxY[maxX] || 0) - pieceMaxY[maxX]) - 1) * squareSize;
 			isDropSlideTest = true;
 			setTimeout(() => {
 				isDropSlideTest = false;
 				if (keysDown.ArrowRight || keysDown.ArrowLeft) {
 					// console.log('isDropSlide');
-					piece.position.y = ((height - (boardMaxY[maxX] || 0) - pieceMaxY[maxX]) - 1) * squareSize;
-					isDropSlide = true;
-				} else {
+					dropSlidePiece = piece;
+				} else if (dropSlidePiece != piece) {
 					for (var x = piece.min.x; x <= piece.max.x; x++) {
 						for (var y = piece.min.y; y <= piece.max.y; y++) {
 							if (piece.grid[x][y]) {
@@ -334,7 +344,8 @@ function movePieceX() {
 	for (var x = piece.min.x; x <= piece.max.x && state[newX + x]; x++) {
 		for (var y = piece.min.y; y <= piece.max.y; y++) {
 			const boardY = y + Math.ceil(piece.position.y / squareSize);
-			if (piece.grid[x][y] && (state[newX + x][boardY] || state[newX + x][boardY - 1])) {
+			// if (piece.grid[x][y] && (state[newX + x][boardY] || state[newX + x][boardY - 1])) {
+			if (piece.grid[x][y] && state[newX + x][boardY]) {
 				return false;
 			}
 		}
