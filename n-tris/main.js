@@ -260,7 +260,6 @@ function drawState() {
 	infoCtx.moveTo(8, 62);
 	infoCtx.lineTo(infoCanvas.width - 8, 62);
 	infoCtx.stroke();
-
 }
 
 function onKeyUp(e) {
