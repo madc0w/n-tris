@@ -11,7 +11,7 @@
 		<style>
 			body {
 				font-family: "Lato", sans-serif;
-				background-color: #eff;
+				background-color: #cdd;
 				color: black;
 			}
 
@@ -61,17 +61,25 @@
 			}
 
 			#game-canvas {
-				border-width: 2px;
-				border-color: #0fe;
-				border-style: solid;
+				border-width: 8px;
+				border-color: #fff;
+				border-style: inset;
 				border-radius: 4px;
 				background-color: #004;
+			}
+
+			#title {
+				font-size: 28px;
 			}
 
 		</style>
 	</head>
 
 	<body onLoad="onLoad();" onKeyDown="onKeyDown(event);" onKeyUp="onKeyUp(event);">
+		<div id="title">
+			n-tris
+			<hr />
+		</div>
 		<div id="game-container">
 			<canvas id="game-canvas" width="600" height="800" />
 		</div>

@@ -5,27 +5,33 @@
 // 	[false, false, false, false],
 // ];
 
-// const testState = [
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
-// ];
+const testState = [
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#ffffff'],
+];
 
 const gameEndDelay = 2000;
 const squareSize = 20;
 const width = 22;
 const height = 32;
 const yAcceleration = 0.0002;
-const maxYVel = 4.2;
+const maxYVel = 6.2;
 var yVel = 1.2;
 
 // https://freesound.org/browse/tags/sound-effects/
@@ -41,6 +47,8 @@ var gameEndTime;
 var piece;
 var state;
 var prevYVel;
+var isDropSlide = false;
+var isDropSlideTest = false;
 
 function onLoad() {
 	canvas = document.getElementById('game-canvas');
@@ -51,12 +59,12 @@ function onLoad() {
 }
 
 function init() {
-	// state = testState;
 	state = [];
 	for (var x = 0; x < width; x++) {
 		const col = [];
 		for (var y = 0; y < height; y++) {
 			col.push(null);
+			// col.push(testState[x] ? testState[x][y] : null);
 		}
 		state.push(col);
 	}
@@ -66,80 +74,86 @@ function init() {
 
 function draw() {
 	if (gameEndTime) {
+		const x = (canvas.width / 2) - 190;
+		const y = (canvas.height / 2) - 8;
+		const text = 'GAME OVER';
 		ctx.fillStyle = '#eee';
-		ctx.font = 'bold 42px Arial';
-		ctx.fillText('GAME OVER', (canvas.width / 2) - 128, (canvas.height / 2) - 8);
+		ctx.font = 'bold 62px Lato';
+		ctx.strokeStyle = '#000';
+		ctx.lineWidth = 8;
+		ctx.strokeText(text, x, y);
+		ctx.fillText(text, x, y);
 		return;
 	}
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	var isAtBottom = false;
-	if (piece) {
-		for (var x = piece.min.x; x <= piece.max.x && state[piece.position.x + x]; x++) {
-			var maxY = 0;
-			for (var py = 0; py <= piece.max.y; py++) {
-				if (piece.grid[x][py] && py > maxY) {
-					maxY = py;
-				}
-			}
-			if (state[piece.position.x + x][Math.floor(piece.position.y / squareSize) + maxY + 1]) {
-				isAtBottom = true;
-				break;
-			}
-		}
-	}
 
-	if (piece && piece.position.y < canvas.height - ((piece.max.y + 1) * squareSize) && !isAtBottom) {
-		piece.position.y += yVel;
-		if (yVel < maxYVel) {
-			yVel += yAcceleration;
-		}
-		// console.log('yVel', yVel);
-	} else {
-		var isSlidingPiece = false;
-		if (piece) {
-			if (keysDown.ArrowLeft || keysDown.ArrowRight) {
-				// console.log('piece.position', piece.position);
-				var newX = null;
-				if (keysDown.ArrowLeft) {
-					if (piece.position.x > -piece.min.x) {
-						newX = piece.position.x - 1;
-					}
-				} else if (keysDown.ArrowRight) {
-					if (piece.position.x + piece.max.x < width - 1) {
-						newX = piece.position.x + 1;
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	if (!isDropSlideTest) {
+		var isAtBottom = false;
+		if (piece && !isDropSlide) {
+			for (var x = piece.min.x; x <= piece.max.x && state[piece.position.x + x]; x++) {
+				var maxY = 0;
+				for (var py = 0; py <= piece.max.y; py++) {
+					if (piece.grid[x][py] && py > maxY) {
+						maxY = py;
 					}
 				}
-				// console.log('newX', newX);
-				isSlidingPiece = setPieceX(newX);
-				// console.log('isSlidingPiece ', isSlidingPiece);
+				if (state[piece.position.x + x][Math.floor(piece.position.y / squareSize) + maxY + 1]) {
+					isAtBottom = true;
+					break;
+				}
+			}
+		}
+
+		if (piece && piece.position.y < canvas.height - ((piece.max.y + 1) * squareSize) && !isAtBottom) {
+			if (isDropSlide) {
+				isDropSlide = movePieceX();
+			} else {
+				piece.position.y += yVel;
+				if (yVel < maxYVel) {
+					yVel += yAcceleration;
+				}
+				// console.log('yVel', yVel);
+			}
+		} else {
+			var isSlidingPiece = false;
+			if (piece) {
+				if (keysDown.ArrowLeft || keysDown.ArrowRight) {
+					// console.log('piece.position', piece.position);
+					// console.log('newX', newX);
+					isSlidingPiece = movePieceX();
+					// console.log('isSlidingPiece ', isSlidingPiece);
+				}
+
+				if (!isSlidingPiece) {
+					for (var x = piece.min.x; x <= piece.max.x; x++) {
+						for (var y = piece.min.y; y <= piece.max.y; y++) {
+							if (piece.grid[x][y]) {
+								state[piece.position.x + x][Math.floor(piece.position.y / squareSize) + y] = piece.color;
+							}
+						}
+					}
+
+					clearLines();
+				}
 			}
 
 			if (!isSlidingPiece) {
-				for (var x = piece.min.x; x <= piece.max.x; x++) {
-					for (var y = piece.min.y; y <= piece.max.y; y++) {
-						if (piece.grid[x][y]) {
-							state[piece.position.x + x][Math.floor(piece.position.y / squareSize) + y] = piece.color;
-						}
-					}
+				playSound(sounds.click);
+				if (piece && piece.position.y == 0) {
+					gameEndTime = new Date();
+					playSound(sounds.gameOver);
+				} else {
+					const n = 1 + Math.floor(Math.random() * (pieces.length - 1));
+					piece = new Piece(pieces[n][0].length);
+					const m = Math.floor(Math.random() * pieces[n].length);
+					const rPiece = pieces[n][m];
+					// console.log('piece: ', n, m);
+					piece.set(rPiece);
+					piece.normalize();
+					const centerX = piece.center.x;
+					piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - centerX - 1);
 				}
-
-				clearLines();
-			}
-		}
-
-		if (!isSlidingPiece) {
-			playSound(sounds.click);
-			if (piece && piece.position.y == 0) {
-				gameEndTime = new Date();
-				playSound(sounds.gameOver);
-			} else {
-				const n = Math.floor(Math.random() * pieces.length);
-				piece = new Piece(pieces[n][0].length);
-				const rPiece = pieces[n][Math.floor(Math.random() * pieces[n].length)];
-				piece.set(rPiece);
-				piece.normalize();
-				const centerX = piece.center.x;
-				piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - centerX - 1);
 			}
 		}
 	}
@@ -244,6 +258,7 @@ function onKeyDown(e) {
 				yVel = maxYVel;
 			}
 		} else if (keysDown.Space || keysDown.ArrowUp) {
+			// console.log('keysDown', keysDown);
 			// drop piece
 			const pieceMaxY = [];
 			const boardMaxY = [];
@@ -271,56 +286,62 @@ function onKeyDown(e) {
 				}
 			}
 
-			for (var x = piece.min.x; x <= piece.max.x; x++) {
-				for (var y = piece.min.y; y <= piece.max.y; y++) {
-					if (piece.grid[x][y]) {
-						state[piece.position.x + x][(height - (boardMaxY[maxX] || 0) - pieceMaxY[maxX]) + y - 1] = piece.color;
+			isDropSlideTest = true;
+			setTimeout(() => {
+				isDropSlideTest = false;
+				if (keysDown.ArrowRight || keysDown.ArrowLeft) {
+					// console.log('isDropSlide');
+					piece.position.y = ((height - (boardMaxY[maxX] || 0) - pieceMaxY[maxX]) - 1) * squareSize;
+					isDropSlide = true;
+				} else {
+					for (var x = piece.min.x; x <= piece.max.x; x++) {
+						for (var y = piece.min.y; y <= piece.max.y; y++) {
+							if (piece.grid[x][y]) {
+								state[piece.position.x + x][(height - (boardMaxY[maxX] || 0) - pieceMaxY[maxX]) + y - 1] = piece.color;
+							}
+						}
 					}
-				}
-			}
 
-			piece = null;
-			clearLines();
+					piece = null;
+					clearLines();
+				}
+			}, 80);
 		}
 		if (piece && (keysDown.ArrowLeft || keysDown.ArrowRight)) {
 			if (keysDown.ShiftLeft || keysDown.ShiftRight) {
 				// TODO check if rotation would intersect game grid
 				piece.rotate(keysDown.ArrowLeft ? 'left' : 'right');
 			} else {
-				var newX = null;
-				if (keysDown.ArrowLeft) {
-					if (piece.position.x > -piece.min.x) {
-						newX = piece.position.x - 1;
-					}
-				} else if (keysDown.ArrowRight) {
-					// console.log('***');
-					// console.log('piece.position.x ', piece.position.x);
-					// console.log('piece.grid.length ', piece.grid.length);
-					// console.log('piece.max.x', piece.max.x);
-					if (piece.position.x + piece.max.x < width - 1) {
-						newX = piece.position.x + 1;
-					}
-				}
-				setPieceX(newX);
+				movePieceX();
 			}
 		}
 	}
 }
 
-function setPieceX(newX) {
-	if (newX != null) {
-		for (var x = piece.min.x; x <= piece.max.x && state[newX + x]; x++) {
-			for (var y = piece.min.y; y <= piece.max.y; y++) {
-				const boardY = y + Math.ceil(piece.position.y / squareSize);
-				if (piece.grid[x][y] && (state[newX + x][boardY] || state[newX + x][boardY - 1])) {
-					return false;
-				}
+function movePieceX() {
+	var newX = piece.position.x;
+	if (keysDown.ArrowLeft) {
+		if (piece.position.x - piece.min.x > 0) {
+			newX--;
+		}
+	} else if (keysDown.ArrowRight) {
+		if (piece.position.x + piece.max.x < width - 1) {
+			newX++;
+		}
+	} else {
+		return false;
+	}
+	for (var x = piece.min.x; x <= piece.max.x && state[newX + x]; x++) {
+		for (var y = piece.min.y; y <= piece.max.y; y++) {
+			const boardY = y + Math.ceil(piece.position.y / squareSize);
+			if (piece.grid[x][y] && (state[newX + x][boardY] || state[newX + x][boardY - 1])) {
+				return false;
 			}
 		}
-
-		piece.position.x = newX;
-		return true;
 	}
+
+	piece.position.x = newX;
+	return true;
 }
 
 function renderPiece(piece) {
