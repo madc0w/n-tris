@@ -17,6 +17,33 @@ function Piece(n) {
 		this.grid.push(row);
 	}
 
+	this.draw = (ctx, position, squareSize, isDrawingGuidelines) => {
+		position = position || this.position;
+		ctx.fillStyle = this.color;
+		for (var x = 0; x < this.grid.length; x++) {
+			for (var y = 0; y < this.grid[0].length; y++) {
+				if (this.grid[x][y]) {
+					const px = (position.x + x) * squareSize;
+					const py = y * squareSize + position.y;
+					ctx.fillRect(px, py, squareSize - 2, squareSize - 2);
+				}
+			}
+		}
+
+		if (isDrawingGuidelines) {
+			ctx.strokeStyle = '#ddd';
+			ctx.lineWidth = 2;
+			ctx.beginPath();
+			ctx.moveTo(position.x * squareSize, position.y + (this.max.y + 1) * squareSize);
+			ctx.lineTo(position.x * squareSize, canvas.height);
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.moveTo((position.x + this.max.x + 1) * squareSize - 2, position.y + (this.max.y + 1) * squareSize);
+			ctx.lineTo((position.x + this.max.x + 1) * squareSize - 2, canvas.height);
+			ctx.stroke();
+		}
+	};
+
 	this.set = (pieceGrid, isSuppressColorChange) => {
 		var n = 0;
 		for (var x = 0; x < this.grid.length; x++) {

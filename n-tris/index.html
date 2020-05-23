@@ -60,17 +60,21 @@
 				display: none;
 			}
 
-			#game-canvas {
+			canvas {
 				border-width: 8px;
 				border-color: #fff;
 				border-style: inset;
 				border-radius: 4px;
 				background-color: #222;
+				vertical-align: top;
+				margin: 22px;
 			}
 
 			#title {
 				font-size: 28px;
 			}
+
+			#game-container {}
 
 		</style>
 	</head>
@@ -81,7 +85,8 @@
 			<hr />
 		</div>
 		<div id="game-container" class="hidden">
-			<canvas id="game-canvas" />
+			<canvas id="game-canvas"></canvas>
+			<canvas id="info-canvas" width="200" height="400"></canvas>
 		</div>
 
 		<!--

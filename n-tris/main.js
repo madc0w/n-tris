@@ -50,14 +50,18 @@ const sounds = {
 };
 
 const keysDown = {};
+const pieceQueue = [];
 const backgroundImage = new Image();
-var canvas, ctx, yVel, gameEndTime, piece, state, prevYVel, dropSlidePiece, isDropSlideTest = false;
+var canvas, ctx, yVel, gameEndTime, piece, state, prevYVel, dropSlidePiece, isDropSlideTest = false, infoCanvas, infoCtx, score = 0;
 
 function onLoad() {
 	canvas = document.getElementById('game-canvas');
 	ctx = canvas.getContext('2d');
 	canvas.width = width * squareSize;
 	canvas.height = height * squareSize;
+
+	infoCanvas = document.getElementById('info-canvas');
+	infoCtx = infoCanvas.getContext('2d');
 
 	// img.onload = () => {
 	// 	console.log('img load');
@@ -80,7 +84,37 @@ function init() {
 	}
 	gameEndTime = null;
 	yVel = initYVel;
+
+	for (var i = 0; i < 2; i++) {
+		pushPiece();
+	}
+
 	window.requestAnimationFrame(draw);
+}
+
+function pushPiece() {
+	const n = minPieceSize - 1 + Math.floor(Math.random() * (pieces.length - (minPieceSize - 1)));
+	// const n = 1;
+	const piece = new Piece(pieces[n][0].length);
+	const m = Math.floor(Math.random() * pieces[n].length);
+	const rPiece = pieces[n][m];
+	// console.log('piece: ', n, m);
+	piece.set(rPiece);
+	piece.normalize();
+	piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - piece.center.x - 1);
+	// piece.position.y = 500;
+	pieceQueue.push(piece);
+
+	infoCtx.clearRect(0, 0, infoCanvas.width, infoCanvas.height);
+	var y = 96;
+	for (const piece of pieceQueue) {
+		const x = Math.floor((infoCanvas.width / squareSize - (piece.max.x - piece.min.x)) / 2);
+		piece.draw(infoCtx, {
+			x,
+			y
+		}, squareSize);
+		y += piece.max.y * squareSize + 42;
+	}
 }
 
 function draw() {
@@ -158,24 +192,15 @@ function draw() {
 					gameEndTime = new Date();
 					playSound(sounds.gameOver);
 				} else {
-					const n = minPieceSize - 1 + Math.floor(Math.random() * (pieces.length - (minPieceSize - 1)));
-					// const n = 1;
-					piece = new Piece(pieces[n][0].length);
-					const m = Math.floor(Math.random() * pieces[n].length);
-					const rPiece = pieces[n][m];
-					// console.log('piece: ', n, m);
-					piece.set(rPiece);
-					piece.normalize();
-					const centerX = piece.center.x;
-					piece.position.x = Math.floor((canvas.width / (2 * squareSize)) - centerX - 1);
-					// piece.position.y = 500;
+					pushPiece();
+					piece = pieceQueue.shift();
 				}
 			}
 		}
 	}
 
 	drawState();
-	drawPiece();
+	piece.draw(ctx, null, squareSize, true);
 
 	window.requestAnimationFrame(draw);
 }
@@ -191,6 +216,7 @@ function clearLines() {
 			}
 		}
 		if (isFullLine) {
+			score++;
 			toClear.push(y);
 		}
 	}
@@ -223,30 +249,18 @@ function drawState() {
 			}
 		}
 	}
-}
 
-function drawPiece() {
-	ctx.fillStyle = piece.color;
-	for (var x = 0; x < piece.grid.length; x++) {
-		for (var y = 0; y < piece.grid[0].length; y++) {
-			if (piece.grid[x][y]) {
-				const px = (piece.position.x + x) * squareSize;
-				const py = y * squareSize + piece.position.y;
-				ctx.fillRect(px, py, squareSize - 2, squareSize - 2);
-			}
-		}
-	}
+	infoCtx.fillStyle = '#eee';
+	infoCtx.font = 'bold 32px Lato';
+	infoCtx.fillText(score, (infoCanvas.width - 22) / 2, 42);
 
-	ctx.strokeStyle = '#ddd';
-	ctx.lineWidth = 2;
-	ctx.beginPath();
-	ctx.moveTo(piece.position.x * squareSize, piece.position.y + (piece.max.y + 1) * squareSize);
-	ctx.lineTo(piece.position.x * squareSize, canvas.height);
-	ctx.stroke();
-	ctx.beginPath();
-	ctx.moveTo((piece.position.x + piece.max.x + 1) * squareSize - 2, piece.position.y + (piece.max.y + 1) * squareSize);
-	ctx.lineTo((piece.position.x + piece.max.x + 1) * squareSize - 2, canvas.height);
-	ctx.stroke();
+	infoCtx.strokeStyle = '#ddd';
+	infoCtx.lineWidth = 2;
+	infoCtx.beginPath();
+	infoCtx.moveTo(8, 62);
+	infoCtx.lineTo(infoCanvas.width - 8, 62);
+	infoCtx.stroke();
+
 }
 
 function onKeyUp(e) {
