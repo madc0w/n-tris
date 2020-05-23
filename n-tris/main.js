@@ -39,7 +39,6 @@ const maxYVel = 6.2;
 const minPieceSize = 3;
 var yVel = 1.4;
 
-
 // https://freesound.org/browse/tags/sound-effects/
 const sounds = {
 	click: new Audio('click.mp3'),
@@ -55,12 +54,18 @@ var state;
 var prevYVel;
 var dropSlidePiece = null;
 var isDropSlideTest = false;
+const backgroundImage = new Image();
 
 function onLoad() {
 	canvas = document.getElementById('game-canvas');
 	ctx = canvas.getContext('2d');
 	canvas.width = width * squareSize;
 	canvas.height = height * squareSize;
+
+	// img.onload = () => {
+	// 	console.log('img load');
+	// };
+	backgroundImage.src = 'background.jpg';
 
 	document.getElementById('game-container').className = '';
 	init();
@@ -95,6 +100,9 @@ function draw() {
 	}
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.globalAlpha = 0.4;
+	ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+	ctx.globalAlpha = 1;
 
 	if (!isDropSlideTest) {
 		var isAtBottom = false;
@@ -231,8 +239,8 @@ function drawPiece() {
 		}
 	}
 
-	ctx.strokeStyle = '#cfc';
-	ctx.lineWidth = 1;
+	ctx.strokeStyle = '#ddd';
+	ctx.lineWidth = 2;
 	ctx.beginPath();
 	ctx.moveTo(piece.position.x * squareSize, piece.position.y + (piece.max.y + 1) * squareSize);
 	ctx.lineTo(piece.position.x * squareSize, canvas.height);
@@ -241,12 +249,6 @@ function drawPiece() {
 	ctx.moveTo((piece.position.x + piece.max.x + 1) * squareSize - 2, piece.position.y + (piece.max.y + 1) * squareSize);
 	ctx.lineTo((piece.position.x + piece.max.x + 1) * squareSize - 2, canvas.height);
 	ctx.stroke();
-
-	// ctx.strokeStyle = 'white';
-	// ctx.lineWidth = 2;
-	// ctx.beginPath();
-	// ctx.rect(piece.position.x * squareSize, piece.position.y, piece.grid.length * squareSize, piece.grid[0].length * squareSize);
-	// ctx.stroke();
 }
 
 function onKeyUp(e) {
