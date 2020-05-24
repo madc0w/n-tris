@@ -50,9 +50,9 @@ const sounds = {
 };
 
 const keysDown = {};
-const pieceQueue = [];
+var pieceQueue = [];
 const backgroundImage = new Image();
-var canvas, ctx, yVel, gameEndTime, piece, state, prevYVel, dropSlidePiece, isDropSlideTest = false, infoCanvas, infoCtx, score = 0;
+var canvas, ctx, yVel, gameEndTime, piece, state, prevYVel, dropSlidePiece, isDropSlideTest = false, infoCanvas, infoCtx, score = 0, scoreContainer, hiScoreContainer;
 
 function onLoad() {
 	canvas = document.getElementById('game-canvas');
@@ -62,6 +62,9 @@ function onLoad() {
 
 	infoCanvas = document.getElementById('info-canvas');
 	infoCtx = infoCanvas.getContext('2d');
+
+	scoreContainer = document.getElementById('score');
+	hiScoreContainer = document.getElementById('hi-score');
 
 	// img.onload = () => {
 	// 	console.log('img load');
@@ -85,7 +88,9 @@ function init() {
 	gameEndTime = null;
 	yVel = initYVel;
 
-	for (var i = 0; i < 2; i++) {
+	piece = null;
+	pieceQueue = [];
+	for (var i = 0; i < 3; i++) {
 		pushPiece();
 	}
 
@@ -106,7 +111,7 @@ function pushPiece() {
 	pieceQueue.push(piece);
 
 	infoCtx.clearRect(0, 0, infoCanvas.width, infoCanvas.height);
-	var y = 96;
+	var y = 40;
 	for (const piece of pieceQueue) {
 		const x = Math.floor((infoCanvas.width / squareSize - (piece.max.x - piece.min.x)) / 2);
 		piece.draw(infoCtx, {
@@ -192,8 +197,8 @@ function draw() {
 					gameEndTime = new Date();
 					playSound(sounds.gameOver);
 				} else {
-					pushPiece();
 					piece = pieceQueue.shift();
+					pushPiece();
 				}
 			}
 		}
@@ -217,6 +222,7 @@ function clearLines() {
 		}
 		if (isFullLine) {
 			score++;
+			localStorage.hiScore = Math.max(score, localStorage.hiScore || 0);
 			toClear.push(y);
 		}
 	}
@@ -250,16 +256,8 @@ function drawState() {
 		}
 	}
 
-	infoCtx.fillStyle = '#eee';
-	infoCtx.font = 'bold 32px Lato';
-	infoCtx.fillText(score, (infoCanvas.width - 22) / 2, 42);
-
-	infoCtx.strokeStyle = '#ddd';
-	infoCtx.lineWidth = 2;
-	infoCtx.beginPath();
-	infoCtx.moveTo(8, 62);
-	infoCtx.lineTo(infoCanvas.width - 8, 62);
-	infoCtx.stroke();
+	scoreContainer.innerHTML = score;
+	hiScoreContainer.innerHTML = localStorage.hiScore || 0;
 }
 
 function onKeyUp(e) {

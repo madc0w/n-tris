@@ -2,7 +2,7 @@
 <html>
 
 	<head>
-		<title>N-tris</title>
+		<title>n-tris</title>
 		<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" />
 		<script src="utils.js" charset="utf-8"></script>
 		<script src="pieces.js" charset="utf-8"></script>
@@ -57,7 +57,7 @@
 			}
 
 			.hidden {
-				display: none;
+				visibility: hidden;
 			}
 
 			canvas {
@@ -67,14 +67,39 @@
 				border-radius: 4px;
 				background-color: #222;
 				vertical-align: top;
-				margin: 22px;
+				margin-right: 22px;
 			}
 
 			#title {
 				font-size: 28px;
+				background-color: #fff;
+				padding: 18px;
+				border-width: 2px;
+				border-style: solid;
+				border-radius: 8px;
+				border-color: #000;
 			}
 
-			#game-container {}
+			#game-container {
+				margin-top: 22px;
+			}
+
+			#game-container td {
+				vertical-align: top;
+			}
+
+			#score-container {
+				text-align: center;
+				font-weight: bold;
+				font-size: 24px;
+				background-color: #fff;
+				border-width: 2px;
+				border-style: solid;
+				border-radius: 8px;
+				border-color: #000;
+				padding: 8px;
+				margin-bottom: 22px;
+			}
 
 		</style>
 	</head>
@@ -82,12 +107,26 @@
 	<body onLoad="onLoad();" onKeyDown="onKeyDown(event);" onKeyUp="onKeyUp(event);">
 		<div id="title">
 			n-tris
-			<hr />
 		</div>
-		<div id="game-container" class="hidden">
-			<canvas id="game-canvas"></canvas>
-			<canvas id="info-canvas" width="200" height="400"></canvas>
-		</div>
+		<table id="game-container" class="hidden">
+			<tr>
+				<td>
+					<canvas id="game-canvas"></canvas>
+				</td>
+				<td id="game-info">
+					<div id="score-container">
+						<div>
+							Score : <span id="score">0</span>
+						</div>
+						<div>
+							Hi Score : <span id="hi-score">0</span>
+						</div>
+					</div>
+					<canvas id="info-canvas" width="200" height="300"></canvas>
+					<br />
+				</td>
+			</tr>
+		</table>
 
 		<!--
 		Enter n: <input id="n-field" type="text" value="4" />
