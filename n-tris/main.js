@@ -77,6 +77,7 @@ function onLoad() {
 }
 
 function init() {
+	score = 0;
 	state = [];
 	for (var x = 0; x < width; x++) {
 		const col = [];
