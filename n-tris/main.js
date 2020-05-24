@@ -34,7 +34,7 @@ const testState = null;
 const gameEndDelay = 1200;
 const squareSize = 20;
 const width = 18;
-const height = 32;
+const height = 28;
 const yAcceleration = 0.00024;
 const maxYVel = 6.2;
 const minPieceSize = 3;
@@ -125,11 +125,11 @@ function pushPiece() {
 
 function draw() {
 	if (gameEndTime) {
-		const x = (canvas.width / 2) - 156;
+		const x = (canvas.width / 2) - 170;
 		const y = (canvas.height / 2) - 18;
 		const text = 'GAME OVER';
 		ctx.fillStyle = '#eee';
-		ctx.font = 'bold 52px Lato';
+		ctx.font = 'bold 48px Orbitron';
 		ctx.strokeStyle = '#000';
 		ctx.lineWidth = 8;
 		ctx.strokeText(text, x, y);
