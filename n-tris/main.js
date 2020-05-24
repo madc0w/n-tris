@@ -31,7 +31,7 @@ const testState = null;
 // 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
 // ];
 
-const gameEndDelay = 2000;
+const gameEndDelay = 1200;
 const squareSize = 20;
 const width = 18;
 const height = 32;
@@ -223,7 +223,7 @@ function clearLines() {
 		}
 		if (isFullLine) {
 			score++;
-			localStorage.hiScore = Math.max(score, localStorage.hiScore || 0);
+			localStorage.ntrisHiScore = Math.max(score, localStorage.ntrisHiScore || 0);
 			toClear.push(y);
 		}
 	}
@@ -258,7 +258,7 @@ function drawState() {
 	}
 
 	scoreContainer.html(score);
-	hiScoreContainer.html(localStorage.hiScore || 0);
+	hiScoreContainer.html(localStorage.ntrisHiScore || 0);
 }
 
 function onKeyUp(e) {
