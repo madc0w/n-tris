@@ -138,7 +138,7 @@ function Piece(n) {
 			}
 		}
 		newPiece.normalize();
-		this.set(newPiece.grid, true);
+		return newPiece;
 	};
 
 	this.normalize = () => {
@@ -177,7 +177,8 @@ function Piece(n) {
 			if (equal(p1, p2)) {
 				return true;
 			}
-			p1.rotate();
+			const rotated = p1.rotate();
+			p1.set(rotated.grid, true);
 		}
 
 		return false;

@@ -5,20 +5,21 @@
 // 	[false, false, false, false],
 // ];
 
+const testState = null;
 // const testState = [
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff', '#fff'],
-// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', null, '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff', '#fff'],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+// 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
 // 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
 // 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
 // 	[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
@@ -55,23 +56,23 @@ const backgroundImage = new Image();
 var canvas, ctx, yVel, gameEndTime, piece, state, prevYVel, dropSlidePiece, isDropSlideTest = false, infoCanvas, infoCtx, score = 0, scoreContainer, hiScoreContainer;
 
 function onLoad() {
-	canvas = document.getElementById('game-canvas');
+	canvas = $('#game-canvas')[0];
 	ctx = canvas.getContext('2d');
 	canvas.width = width * squareSize;
 	canvas.height = height * squareSize;
 
-	infoCanvas = document.getElementById('info-canvas');
+	infoCanvas = $('#info-canvas')[0];
 	infoCtx = infoCanvas.getContext('2d');
 
-	scoreContainer = document.getElementById('score');
-	hiScoreContainer = document.getElementById('hi-score');
+	scoreContainer = $('#score');
+	hiScoreContainer = $('#hi-score');
 
 	// img.onload = () => {
 	// 	console.log('img load');
 	// };
 	backgroundImage.src = 'background.jpg';
 
-	document.getElementById('game-container').className = '';
+	$('#game-container').fadeIn(600);
 	init();
 }
 
@@ -80,8 +81,7 @@ function init() {
 	for (var x = 0; x < width; x++) {
 		const col = [];
 		for (var y = 0; y < height; y++) {
-			col.push(null);
-			// col.push(testState[x] ? testState[x][y] : null);
+			col.push(testState && testState[x] ? testState[x][y] : null);
 		}
 		state.push(col);
 	}
@@ -99,9 +99,10 @@ function init() {
 
 function pushPiece() {
 	const n = minPieceSize - 1 + Math.floor(Math.random() * (pieces.length - (minPieceSize - 1)));
-	// const n = 1;
+	// const n = 3;
 	const piece = new Piece(pieces[n][0].length);
 	const m = Math.floor(Math.random() * pieces[n].length);
+	// const m = 0;
 	const rPiece = pieces[n][m];
 	// console.log('piece: ', n, m);
 	piece.set(rPiece);
@@ -137,7 +138,7 @@ function draw() {
 	}
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.globalAlpha = 0.4;
+	ctx.globalAlpha = 0.3;
 	ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 	ctx.globalAlpha = 1;
 
@@ -256,8 +257,8 @@ function drawState() {
 		}
 	}
 
-	scoreContainer.innerHTML = score;
-	hiScoreContainer.innerHTML = localStorage.hiScore || 0;
+	scoreContainer.html(score);
+	hiScoreContainer.html(localStorage.hiScore || 0);
 }
 
 function onKeyUp(e) {
@@ -333,7 +334,6 @@ function onKeyDown(e) {
 		}
 		if (keysDown.ArrowLeft || keysDown.ArrowRight) {
 			if (keysDown.ShiftLeft || keysDown.ShiftRight) {
-				// TODO check if rotation would intersect game grid
 				var direction, sound;
 				if (keysDown.ArrowLeft) {
 					direction = 'left';
@@ -342,8 +342,30 @@ function onKeyDown(e) {
 					direction = 'right';
 					sound = sounds.rotateRight;
 				}
-				piece.rotate(direction);
-				playSound(sound);
+
+				const rotated = piece.rotate(direction);
+				// check if rotation would intersect game grid
+				var isIntersecting = piece.position.x + rotated.max.x >= state.length || Math.floor(piece.position.y / squareSize) + rotated.max.y >= state[0].length;
+				if (!isIntersecting) {
+					const pieceY = Math.ceil(piece.position.y / squareSize);
+					outer: for (var x = rotated.min.x; x <= rotated.max.x && state[x]; x++) {
+						for (var y = rotated.min.y; y <= rotated.max.y; y++) {
+							const boardY = Math.min(state[0].length - 1, y + pieceY);
+							const boardX = x + piece.position.x;
+							// console.log('boardY', boardY);
+							// if (piece.grid[x][y] && (state[newX + x][boardY] || state[newX + x][boardY - 1])) {
+							if (rotated.grid[x][y] && state[boardX][boardY]) {
+								isIntersecting = true;
+								break outer;
+							}
+						}
+					}
+				}
+
+				if (!isIntersecting) {
+					piece.set(rotated.grid, true);
+					playSound(sound);
+				}
 			} else {
 				movePieceX();
 			}
@@ -364,9 +386,12 @@ function movePieceX() {
 	} else {
 		return false;
 	}
+
+	const pieceY = Math.ceil(piece.position.y / squareSize);
 	for (var x = piece.min.x; x <= piece.max.x && state[newX + x]; x++) {
 		for (var y = piece.min.y; y <= piece.max.y; y++) {
-			const boardY = y + Math.ceil(piece.position.y / squareSize);
+			const boardY = Math.min(state[0].length - 1, y + pieceY);
+			// console.log('boardY', boardY);
 			// if (piece.grid[x][y] && (state[newX + x][boardY] || state[newX + x][boardY - 1])) {
 			if (piece.grid[x][y] && state[newX + x][boardY]) {
 				return false;
