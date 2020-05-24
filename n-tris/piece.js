@@ -31,16 +31,39 @@ function Piece(n) {
 		}
 
 		if (isDrawingGuidelines) {
-			ctx.strokeStyle = '#ddd';
-			ctx.lineWidth = 2;
-			ctx.beginPath();
-			ctx.moveTo(position.x * squareSize, position.y + (this.max.y + 1) * squareSize);
-			ctx.lineTo(position.x * squareSize, canvas.height);
-			ctx.stroke();
-			ctx.beginPath();
-			ctx.moveTo((position.x + this.max.x + 1) * squareSize - 2, position.y + (this.max.y + 1) * squareSize);
-			ctx.lineTo((position.x + this.max.x + 1) * squareSize - 2, canvas.height);
-			ctx.stroke();
+
+			const x1 = position.x * squareSize;
+			const x2 = (position.x + this.max.x + 1) * squareSize - 2;
+			const y1 = position.y + (this.max.y + 1) * squareSize;
+			const y2 = canvas.height;
+			const width = (x2 - x1) / 2;
+			const color1 = 'rgba(255, 255, 0, 0.2)';
+			const color2 = 'rgba(0, 0, 0, 0)';
+			{
+				const gradient = ctx.createLinearGradient(x1, 0, x1 + width, 0);
+				gradient.addColorStop(0, color1);
+				gradient.addColorStop(1, color2);
+				ctx.fillStyle = gradient;
+				ctx.fillRect(x1, y1, width, y2 - y1);
+			}
+			{
+				const gradient = ctx.createLinearGradient(x1 + width, 0, x2, 0);
+				gradient.addColorStop(1, color1);
+				gradient.addColorStop(0, color2);
+				ctx.fillStyle = gradient;
+				ctx.fillRect(x1 + width, y1, width, y2 - y1);
+			}
+
+			// ctx.strokeStyle = '#ddd';
+			// ctx.lineWidth = 2;
+			// ctx.beginPath();
+			// ctx.moveTo(position.x * squareSize, position.y + (this.max.y + 1) * squareSize);
+			// ctx.lineTo(position.x * squareSize, canvas.height);
+			// ctx.stroke();
+			// ctx.beginPath();
+			// ctx.moveTo((position.x + this.max.x + 1) * squareSize - 2, position.y + (this.max.y + 1) * squareSize);
+			// ctx.lineTo((position.x + this.max.x + 1) * squareSize - 2, canvas.height);
+			// ctx.stroke();
 		}
 	};
 
