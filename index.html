@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>N-tris</title>
+		<link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" />
+		<!-- <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" /> -->
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<script src="jquery-3.5.1.min.js" charset="utf-8"></script>
+		<script src="utils.js" charset="utf-8"></script>
+		<script src="pieces.js" charset="utf-8"></script>
+		<script src="piece.js" charset="utf-8"></script>
+		<script src="main.js" charset="utf-8"></script>
+
+		<!-- for Facebook:  -->
+		<meta property="og:title" content="N-tris" />
+		<meta property="og:image" content="http://madc0w.github.io/n-tris/n-tris-title.PNG" />
+		<meta property="og:description" content="Like Tetris, but with more pieces" />
+		<meta property="og:site_name" content="N-tris" />
+		<meta property="og:url" content="http://madc0w.github.io/n-tris" />
+
+		<!--  for Twitter: -->
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:site" content="@ntris" />
+		<meta name="twitter:title" content="N-tris" />
+		<meta name="twitter:description" content="Like Tetris, but with more pieces" />
+		<meta name="twitter:image" content="http://madc0w.github.io/n-tris/n-tris-title.PNG" />
+
+		<style>
+			body {
+				font-family: "Orbitron", sans-serif;
+				background-color: #cdd;
+				color: black;
+			}
+
+			.pieces-table {
+				background-color: #dfd;
+				margin-left: 22px;
+				margin-bottom: 12px;
+				margin-top: 4px;
+				padding: 4px;
+			}
+
+			.pieces-table td {
+				height: 16px;
+				width: 16px;
+				border-radius: 4px;
+			}
+
+			button {
+				cursor: pointer;
+				background-color: #4d0;
+				border-radius: 6px;
+				width: 100px;
+				margin-left: 6px;
+				margin-right: 6px;
+			}
+
+			button:hover {
+				font-weight: bold;
+			}
+
+			#n-field {
+				width: 40px;
+			}
+
+			.pieces-header {
+				background-color: #4d0;
+				padding: 4px;
+				font-weight: bold;
+			}
+
+			#spinner {
+				height: 36px;
+			}
+
+			.hidden {
+				display: none;
+			}
+
+			canvas {
+				border-width: 8px;
+				border-color: #fff;
+				border-style: inset;
+				border-radius: 4px;
+				background-color: #222;
+				vertical-align: top;
+				margin-right: 22px;
+			}
+
+			#title {
+				width: 972px;
+				font-weight: bold;
+				font-size: 22px;
+				text-align: center;
+				background-color: #fff;
+				padding: 8px;
+				background-color: #222;
+				color: #fff;
+				border-width: 8px;
+				border-color: #fff;
+				border-style: inset;
+				border-radius: 4px;
+			}
+
+			#game-container {
+				margin-top: 22px;
+			}
+
+			#game-container td {
+				vertical-align: top;
+			}
+
+			#score-container {
+				margin-bottom: 22px;
+				width: 184px;
+				padding: 8px;
+				text-align: right;
+				background-color: #222;
+				color: #fff;
+				font-weight: bold;
+				font-size: 18px;
+				border-width: 8px;
+				border-color: #fff;
+				border-style: inset;
+				border-radius: 4px;
+			}
+
+			#instructions {
+				width: 320px;
+				height: 188px;
+				padding: 8px;
+				background-color: #222;
+				color: #fff;
+				font-weight: bold;
+				font-size: 14px;
+				border-width: 8px;
+				border-color: #fff;
+				border-style: inset;
+				border-radius: 4px;
+			}
+
+			#instructions table {
+				width: 100%;
+			}
+
+			#instructions table td {
+				padding: 4px;
+				border: 1px solid #fff;
+			}
+
+			#score-container div {
+				padding-right: 32px;
+			}
+
+		</style>
+	</head>
+
+	<body onLoad="onLoad();" onKeyDown="onKeyDown(event);" onKeyUp="onKeyUp(event);">
+		<div id="title">
+			N-tris
+		</div>
+		<table id="game-container" class="hidden">
+			<tr>
+				<td>
+					<canvas id="game-canvas"></canvas>
+				</td>
+				<td id="game-info">
+					<div id="score-container">
+						<div>
+							Score : <span id="score">0</span>
+						</div>
+						<div>
+							Hi Score : <span id="hi-score">0</span>
+						</div>
+					</div>
+					<canvas id="info-canvas" width="200" height="300"></canvas>
+				</td>
+				<td>
+					<div id="instructions">
+						<table>
+							<tr>
+								<th>Keys</th>
+								<th>Action</th>
+							</tr>
+							<tr>
+								<td>Left/Right arrows</td>
+								<td>move piece</td>
+							</tr>
+							<tr>
+								<td>Space &amp; Up arrow</td>
+								<td>drop piece</td>
+							</tr>
+							<tr>
+								<td>Shift + Left/Right arrows</td>
+								<td>rotate piece</td>
+							</tr>
+							<tr>
+								<td>Down arrow</td>
+								<td>accelerate piece</td>
+							</tr>
+						</table>
+					</div>
+
+				</td>
+			</tr>
+		</table>
+
+		<!--
+		Enter n: <input id="n-field" type="text" value="4" />
+
+		<button id="go-button" onClick="generatePiecesTable()">Go</button>
+		<span id="spinner" class="hidden">WORKING...</span>
+		<hr />
+		<div id="pieces-table-container"> </div> -->
+	</body>
+
+</html>
